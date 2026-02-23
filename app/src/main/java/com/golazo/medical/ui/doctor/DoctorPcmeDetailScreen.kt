@@ -1,0 +1,187 @@
+package com.golazo.medical.ui.doctor
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.golazo.medical.ui.components.*
+import com.golazo.medical.ui.theme.*
+
+@Composable
+fun DoctorPcmeDetailScreen(
+    entryId: String,
+    onBack: () -> Unit,
+    viewModel: DoctorViewModel = hiltViewModel()
+) {
+    val entry by viewModel.currentPcme.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+
+    LaunchedEffect(entryId) { viewModel.loadPcmeDetail(entryId) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundGray)
+    ) {
+        GolazoTopBar(
+            title = "PCME Detail",
+            onBack = onBack,
+            actions = {
+                IconButton(onClick = { /* Edit mode placeholder */ }) {
+                    Icon(Icons.Default.Edit, "Edit", tint = White)
+                }
+            }
+        )
+
+        if (isLoading && entry == null) {
+            LoadingScreen()
+        } else {
+            entry?.let { pcme ->
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    item {
+                        GolazoCard {
+                            SectionHeader("General Information")
+                            PcmeRow("Blood Type", pcme.bloodType)
+                            pcme.height?.let { PcmeRow("Height", it) }
+                            pcme.weight?.let { PcmeRow("Weight", it) }
+                            PcmeRow("Recorded", pcme.recordedAt)
+                            pcme.recordedBy?.let { PcmeRow("Recorded By", it.take(8) + "...") }
+                        }
+                    }
+
+                    item {
+                        GolazoCard {
+                            SectionHeader("Cardiac")
+                            pcme.ecgStatus?.let { PcmeRow("ECG Status", it) } ?: PcmeRow("ECG Status", "Not recorded")
+                            pcme.echoStatus?.let { PcmeRow("Echo Status", it) } ?: PcmeRow("Echo Status", "Not recorded")
+                        }
+                    }
+
+                    item {
+                        GolazoCard {
+                            SectionHeader("Concussion (SCAT)")
+                            pcme.scatScore?.let { PcmeRow("SCAT Score", "$it") } ?: PcmeRow("SCAT Score", "Not recorded")
+                            pcme.scatDate?.let { PcmeRow("SCAT Date", it) }
+                        }
+                    }
+
+                    if (pcme.vaccinePassport.isNotEmpty()) {
+                        item {
+                            GolazoCard {
+                                SectionHeader("Vaccine Passport")
+                                pcme.vaccinePassport.forEach { v ->
+                                    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+                                        Text(v.vaccine, fontSize = 11.sp, modifier = Modifier.weight(1f))
+                                        Text(v.date, fontSize = 11.sp, color = TextSecondary)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (pcme.medicalConditions.isNotEmpty()) {
+                        item {
+                            GolazoCard {
+                                SectionHeader("Medical Conditions")
+                                pcme.medicalConditions.forEach { c ->
+                                    Text(c.condition, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                                    Text(c.notes, fontSize = 11.sp, color = TextSecondary)
+                                    Spacer(Modifier.height(4.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    if (pcme.currentMedications.isNotEmpty()) {
+                        item {
+                            GolazoCard {
+                                SectionHeader("Current Medications")
+                                pcme.currentMedications.forEach { m ->
+                                    PcmeRow(m.medication, "${m.dosage} - ${m.frequency}")
+                                }
+                            }
+                        }
+                    }
+
+                    if (pcme.prescriptions.isNotEmpty()) {
+                        item {
+                            GolazoCard {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    SectionHeader("Prescriptions")
+                                    TextButton(onClick = { /* Import prescriptions */ }) {
+                                        Text("Import", fontSize = 11.sp, color = UefaBlue)
+                                    }
+                                }
+                                pcme.prescriptions.forEach { p ->
+                                    Text(p.name, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+                                    Text("${p.dosage} - ${p.frequency} (by ${p.prescribedBy})", fontSize = 11.sp, color = TextSecondary)
+                                    Spacer(Modifier.height(4.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    pcme.allergies?.let {
+                        item {
+                            GolazoCard {
+                                SectionHeader("Allergies")
+                                Text(it, fontSize = 12.sp)
+                            }
+                        }
+                    }
+
+                    item {
+                        GolazoCard {
+                            SectionHeader("Other")
+                            pcme.asthma?.let { PcmeRow("Asthma", it) }
+                            pcme.hepatitisB?.let { PcmeRow("Hepatitis B", it) }
+                            pcme.tetanusStatus?.let { PcmeRow("Tetanus", it) }
+                            pcme.lastVaccineDate?.let { PcmeRow("Last Vaccine", it) }
+                        }
+                    }
+
+                    if (pcme.termsAccepted) {
+                        item {
+                            GolazoCard {
+                                SectionHeader("Signature")
+                                PcmeRow("Terms Accepted", pcme.termsAcceptedAt ?: "Yes")
+                                pcme.signatureData?.let {
+                                    Text("Signature: ${it.take(20)}...", fontSize = 10.sp, color = TextSecondary)
+                                }
+                            }
+                        }
+                    }
+
+                    item { Spacer(Modifier.height(80.dp)) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PcmeRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)
+    ) {
+        Text(label, fontSize = 11.sp, color = TextSecondary, modifier = Modifier.weight(1f))
+        Text(value, fontSize = 11.sp, fontWeight = FontWeight.Medium)
+    }
+}
