@@ -55,33 +55,56 @@ fun GolazoNavHost() {
 
 @Composable
 private fun GolazoNavHostContent(navController: NavHostController) {
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val sessionManager = authViewModel.sessionManager
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Determine if we should show bottom nav
-    val playerTabRoutes = playerNavItems.map { it.route }
-    val doctorTabRoutes = doctorNavItems.map { it.route }
-    val isPlayerTab = currentRoute in playerTabRoutes
-    val isDoctorTab = currentRoute in doctorTabRoutes
-    val showBottomNav = isPlayerTab || isDoctorTab
+    // Determine if we should show bottom nav — visible on all authenticated screens
+    val authRoutes = setOf(Routes.LOGIN, Routes.PIN_VERIFY, Routes.ONBOARDING, Routes.TERMS)
+    val isAuthScreen = currentRoute in authRoutes
+    val isPlayerScreen = currentRoute?.startsWith("player/") == true
+    val isDoctorScreen = currentRoute?.startsWith("doctor/") == true
+    val isSharedScreen = currentRoute in setOf(Routes.INTELLIGENCE, Routes.SIMULATIONS)
+    val showBottomNav = !isAuthScreen && currentRoute != null && (isPlayerScreen || isDoctorScreen || isSharedScreen)
+
+    // Pick the right nav items based on the current screen's role context
+    val navItems = when {
+        isDoctorScreen -> doctorNavItems
+        isPlayerScreen -> playerNavItems
+        isSharedScreen -> {
+            val role = sessionManager.currentUser.value?.role
+            if (role == "doctor") doctorNavItems else playerNavItems
+        }
+        else -> playerNavItems
+    }
+
+    // Determine which tab is "active" by matching the route prefix
+    fun isTabSelected(tabRoute: String): Boolean {
+        if (currentRoute == tabRoute) return true
+        return currentRoute?.startsWith(tabRoute) == true && tabRoute != currentRoute
+    }
 
     Scaffold(
         bottomBar = {
             if (showBottomNav) {
-                val items = if (isPlayerTab) playerNavItems else doctorNavItems
                 NavigationBar(
                     containerColor = CardWhite,
                     tonalElevation = 12.dp
                 ) {
-                    items.forEach { item ->
+                    val homeRoute = navItems.first().route
+                    navItems.forEach { item ->
+                        val selected = isTabSelected(item.route)
                         NavigationBarItem(
-                            selected = currentRoute == item.route,
+                            selected = selected,
                             onClick = {
-                                if (currentRoute != item.route) {
+                                if (item.route == homeRoute) {
+                                    // Home tab: pop everything back to home
+                                    navController.popBackStack(homeRoute, inclusive = false)
+                                } else {
                                     navController.navigate(item.route) {
-                                        popUpTo(items.first().route) { saveState = true }
+                                        popUpTo(homeRoute) { inclusive = false }
                                         launchSingleTop = true
-                                        restoreState = true
                                     }
                                 }
                             },
@@ -96,7 +119,7 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                                 Text(
                                     item.label,
                                     fontSize = 10.sp,
-                                    fontWeight = if (currentRoute == item.route) FontWeight.Bold else FontWeight.Normal
+                                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
                                 )
                             },
                             colors = NavigationBarItemDefaults.colors(
@@ -131,10 +154,16 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                                 popUpTo(Routes.LOGIN) { inclusive = true }
                             }
                             else -> {
-                                // Determine role from the AuthViewModel's session
-                                // Navigate based on role - we'll check in the terms/home screens
-                                navController.navigate(Routes.terms(userId)) {
-                                    popUpTo(Routes.LOGIN) { inclusive = true }
+                                val user = sessionManager.currentUser.value
+                                if (user?.tcAcceptedAt != null) {
+                                    val homeRoute = if (user.role == "doctor") Routes.DOCTOR_HOME else Routes.PLAYER_HOME
+                                    navController.navigate(homeRoute) {
+                                        popUpTo(Routes.LOGIN) { inclusive = true }
+                                    }
+                                } else {
+                                    navController.navigate(Routes.terms(userId)) {
+                                        popUpTo(Routes.LOGIN) { inclusive = true }
+                                    }
                                 }
                             }
                         }
@@ -150,8 +179,16 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                 PinScreen(
                     userId = userId,
                     onVerified = {
-                        navController.navigate(Routes.terms(userId)) {
-                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        val user = sessionManager.currentUser.value
+                        if (user?.tcAcceptedAt != null) {
+                            val homeRoute = if (user.role == "doctor") Routes.DOCTOR_HOME else Routes.PLAYER_HOME
+                            navController.navigate(homeRoute) {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate(Routes.terms(userId)) {
+                                popUpTo(Routes.LOGIN) { inclusive = true }
+                            }
                         }
                     }
                 )
@@ -177,8 +214,7 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                 arguments = listOf(navArgument("userId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val userId = backStackEntry.arguments?.getString("userId") ?: ""
-                val playerVm: PlayerViewModel = hiltViewModel()
-                val currentUser by playerVm.sessionManager.currentUser.collectAsStateWithLifecycle()
+                val currentUser by sessionManager.currentUser.collectAsStateWithLifecycle()
 
                 LaunchedEffect(currentUser) {
                     currentUser?.let { u ->

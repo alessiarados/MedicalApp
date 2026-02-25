@@ -49,6 +49,7 @@ fun PlayerHomeScreen(
     val club = profile?.club ?: ""
     val nationality = profile?.nationality ?: ""
     val dob = profile?.dob ?: ""
+    val imageUrl = profile?.imageUrl
     val email = viewModel.sessionManager.currentUser.value?.email ?: ""
 
     LazyColumn(
@@ -93,21 +94,17 @@ fun PlayerHomeScreen(
                         )
                     }
                     // Avatar top-right (clickable for profile menu)
-                    Surface(
-                        shape = CircleShape,
-                        color = White.copy(alpha = 0.15f),
+                    Box(
                         modifier = Modifier
                             .size(44.dp)
                             .align(Alignment.TopEnd)
                             .clickable { showProfileMenu = true }
                     ) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = "Profile",
-                            tint = White,
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .size(24.dp)
+                        ProfileAvatar(
+                            imageUrl = imageUrl,
+                            name = "$firstName $lastName",
+                            size = 44,
+                            fallbackColor = White
                         )
                     }
                     // Player info
@@ -521,6 +518,7 @@ fun PlayerHomeScreen(
     // Profile Sheet
     if (showProfileMenu) {
         ProfileSheet(
+            imageUrl = imageUrl,
             firstName = firstName,
             lastName = lastName,
             position = position,
@@ -576,6 +574,7 @@ fun PlayerHomeScreen(
 
 @Composable
 private fun ProfileSheet(
+    imageUrl: String?,
     firstName: String,
     lastName: String,
     position: String,
@@ -588,8 +587,6 @@ private fun ProfileSheet(
     onSignOut: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
-    val initials = "${firstName.firstOrNull() ?: ""}${lastName.firstOrNull() ?: ""}".uppercase()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -633,21 +630,12 @@ private fun ProfileSheet(
 
                     // Avatar circle
                     Box(contentAlignment = Alignment.Center) {
-                        Surface(
-                            shape = CircleShape,
-                            color = Color(0xFF1A2744),
-                            modifier = Modifier.size(88.dp),
-                            shadowElevation = 6.dp
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Text(
-                                    initials,
-                                    fontSize = 30.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = White
-                                )
-                            }
-                        }
+                        ProfileAvatar(
+                            imageUrl = imageUrl,
+                            name = "$firstName $lastName",
+                            size = 88,
+                            fallbackColor = White
+                        )
                         // Online indicator
                         Surface(
                             shape = CircleShape,

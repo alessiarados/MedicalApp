@@ -15,6 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -149,7 +153,7 @@ fun GolazoButton(
                 strokeWidth = 2.dp
             )
         } else {
-            Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.3.sp)
+            Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.3.sp, color = contentColor)
         }
     }
 }
@@ -363,5 +367,31 @@ fun InitialsAvatar(
                 letterSpacing = 1.sp
             )
         }
+    }
+}
+
+@Composable
+fun ProfileAvatar(
+    imageUrl: String?,
+    name: String,
+    size: Int = 40,
+    fallbackColor: Color = UefaBlue
+) {
+    if (!imageUrl.isNullOrBlank()) {
+        val fullUrl = if (imageUrl.startsWith("http")) imageUrl
+            else "http://10.0.2.2:3000$imageUrl"
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(fullUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(size.dp)
+                .clip(CircleShape)
+        )
+    } else {
+        InitialsAvatar(name = name, color = fallbackColor, size = size)
     }
 }

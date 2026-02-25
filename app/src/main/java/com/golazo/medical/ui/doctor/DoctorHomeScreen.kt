@@ -390,7 +390,7 @@ fun DoctorHomeScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        InitialsAvatar(playerName, sevColor, 36)
+                                        ProfileAvatar(imageUrl = player?.profile?.imageUrl, name = playerName, size = 36, fallbackColor = sevColor)
                                         Spacer(Modifier.width(12.dp))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text(playerName, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
@@ -522,7 +522,7 @@ fun DoctorHomeScreen(
                                         .padding(vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    InitialsAvatar("${p.firstName} ${p.lastName}", UefaBlue, 36)
+                                    ProfileAvatar(imageUrl = p.imageUrl, name = "${p.firstName} ${p.lastName}", size = 36, fallbackColor = UefaBlue)
                                     Spacer(Modifier.width(12.dp))
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text("${p.firstName} ${p.lastName}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)

@@ -237,10 +237,11 @@ fun DoctorPlayersScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             // Avatar with injury indicator
                             Box {
-                                InitialsAvatar(
-                                    "${profile.firstName} ${profile.lastName}",
-                                    if (isInjured) SeveritySevere else UefaBlue,
-                                    48
+                                ProfileAvatar(
+                                    imageUrl = profile.imageUrl,
+                                    name = "${profile.firstName} ${profile.lastName}",
+                                    size = 48,
+                                    fallbackColor = if (isInjured) SeveritySevere else UefaBlue
                                 )
                                 if (isInjured) {
                                     Surface(

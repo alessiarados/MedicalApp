@@ -1,16 +1,18 @@
 {
   "name": "golazo-medical-backend",
-  "version": "1.0.0",
-  "description": "Backend API for Golazo Medical Android app",
-  "main": "server.js",
+  "version": "2.0.0",
+  "description": "Backend API for Golazo Medical Android app (json-server)",
+  "main": "json-server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node json-server.js",
+    "dev": "node --watch json-server.js",
+    "start:old": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "uuid": "^9.0.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "json-server": "^0.17.4"
   }
 }

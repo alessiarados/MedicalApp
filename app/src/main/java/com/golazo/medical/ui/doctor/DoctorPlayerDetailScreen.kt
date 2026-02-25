@@ -60,7 +60,7 @@ fun DoctorPlayerDetailScreen(
                             Column(modifier = Modifier.padding(20.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     d.profile?.let { p ->
-                                        InitialsAvatar("${p.firstName} ${p.lastName}", White, 56)
+                                        ProfileAvatar(imageUrl = p.imageUrl, name = "${p.firstName} ${p.lastName}", size = 56, fallbackColor = White)
                                         Spacer(Modifier.width(16.dp))
                                         Column(modifier = Modifier.weight(1f)) {
                                             Text("${p.firstName} ${p.lastName}", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = White)

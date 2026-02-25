@@ -46,7 +46,7 @@ fun PlayerProfileScreen(
             Spacer(Modifier.height(16.dp))
 
             profile?.let { p ->
-                InitialsAvatar("${p.firstName} ${p.lastName}", UefaBlue, 80)
+                ProfileAvatar(imageUrl = p.imageUrl, name = "${p.firstName} ${p.lastName}", size = 80, fallbackColor = UefaBlue)
                 Spacer(Modifier.height(12.dp))
                 Text("${p.firstName} ${p.lastName}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(p.position, fontSize = 12.sp, color = TextSecondary)

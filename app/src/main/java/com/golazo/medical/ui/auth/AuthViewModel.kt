@@ -58,7 +58,7 @@ data class TermsState(
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: GolazoRepository,
-    private val sessionManager: SessionManager
+    val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow(LoginState())
