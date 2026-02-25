@@ -67,31 +67,34 @@ fun DoctorInjuryDetailScreen(
                 injury?.let { inj ->
                     // Injury Info
                     item {
-                        GolazoCard {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(inj.bodyArea, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                SeverityBadge(inj.severity)
+                        val sevColor = when (inj.severity) { "minor" -> SeverityMinor; "moderate" -> SeverityModerate; else -> SeveritySevere }
+                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                                    Text(inj.bodyArea, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                    Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
+                                        Text(inj.severity.replaceFirstChar { it.uppercase() }, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = sevColor, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
+                                    }
+                                }
+                                Spacer(Modifier.height(12.dp))
+                                DetailRow("Mechanism", inj.mechanism)
+                                inj.injuryCategory?.let { DetailRow("Category", it) }
+                                inj.injuryType?.let { DetailRow("Type", it) }
+                                DetailRow("Status", inj.status.replaceFirstChar { it.uppercase() })
+                                DetailRow("RTP Status", inj.rtpStatus.replace("_", " ").replaceFirstChar { it.uppercase() })
+                                DetailRow("Re-injury", if (inj.isReinjury) "Yes" else "No")
+                                DetailRow("Created by", inj.createdBy)
+                                inj.injuryDate?.let { DetailRow("Date", it) }
+                                inj.estimatedReturnDate?.let { DetailRow("Est. Return", it) }
+                                inj.treatmentPlan?.let { DetailRow("Treatment", it) }
                             }
-                            Spacer(Modifier.height(8.dp))
-                            DetailRow("Mechanism", inj.mechanism)
-                            inj.injuryCategory?.let { DetailRow("Category", it) }
-                            inj.injuryType?.let { DetailRow("Type", it) }
-                            DetailRow("Status", inj.status.replaceFirstChar { it.uppercase() })
-                            DetailRow("RTP Status", inj.rtpStatus.replace("_", " ").replaceFirstChar { it.uppercase() })
-                            DetailRow("Re-injury", if (inj.isReinjury) "Yes" else "No")
-                            DetailRow("Created by", inj.createdBy)
-                            inj.injuryDate?.let { DetailRow("Date", it) }
-                            inj.estimatedReturnDate?.let { DetailRow("Est. Return", it) }
-                            inj.treatmentPlan?.let { DetailRow("Treatment", it) }
                         }
                     }
 
                     // RTP Progress
                     item {
-                        GolazoCard {
+                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(16.dp)) {
                             Text("Return to Play Progress", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                             Spacer(Modifier.height(12.dp))
                             val rtpStages = listOf("not_started", "in_rehab", "light_training", "full_training", "cleared")
@@ -130,6 +133,7 @@ fun DoctorInjuryDetailScreen(
                                 }
                             }
                         }
+                        }
                     }
 
                     // Notes
@@ -139,7 +143,7 @@ fun DoctorInjuryDetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            SectionHeader("Notes Timeline")
+                            Text("Notes Timeline", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             TextButton(onClick = { showAddNote = !showAddNote }) {
                                 Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(4.dp))
@@ -150,7 +154,8 @@ fun DoctorInjuryDetailScreen(
 
                     if (showAddNote) {
                         item {
-                            GolazoCard {
+                            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                                Column(modifier = Modifier.padding(16.dp)) {
                                 Text("New Note", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(8.dp))
                                 Text("Pain Intensity: $noteIntensity/10", fontSize = 12.sp)
@@ -214,11 +219,13 @@ fun DoctorInjuryDetailScreen(
                                     enabled = noteSoap.isNotBlank()
                                 )
                             }
+                            }
                         }
                     }
 
                     items(notes) { note ->
-                        GolazoCard {
+                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.padding(16.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -230,6 +237,7 @@ fun DoctorInjuryDetailScreen(
                             Text(note.soapNotes, fontSize = 12.sp, color = TextSecondary)
                             Spacer(Modifier.height(4.dp))
                             Text(note.createdAt ?: "", fontSize = 10.sp, color = TextSecondary.copy(alpha = 0.7f))
+                        }
                         }
                     }
                 }

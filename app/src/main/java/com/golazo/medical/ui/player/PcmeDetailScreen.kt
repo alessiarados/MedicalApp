@@ -3,11 +3,14 @@ package com.golazo.medical.ui.player
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,19 +47,17 @@ fun PcmeDetailScreen(
                 ) {
                     // General
                     item {
-                        GolazoCard {
-                            SectionHeader("General Information")
+                        PcmeSection("General Information", Icons.Default.Person) {
                             PcmeRow("Blood Type", pcme.bloodType)
-                            pcme.height?.let { PcmeRow("Height", it) }
-                            pcme.weight?.let { PcmeRow("Weight", it) }
-                            PcmeRow("Recorded", pcme.recordedAt)
+                            pcme.height?.let { PcmeRow("Height", "${it} cm") }
+                            pcme.weight?.let { PcmeRow("Weight", "${it} kg") }
+                            PcmeRow("Recorded", pcme.recordedAt.take(10))
                         }
                     }
 
                     // Cardiac
                     item {
-                        GolazoCard {
-                            SectionHeader("Cardiac")
+                        PcmeSection("Cardiac", Icons.Default.Favorite) {
                             pcme.ecgStatus?.let { PcmeRow("ECG Status", it) }
                             pcme.echoStatus?.let { PcmeRow("Echo Status", it) }
                         }
@@ -64,8 +65,7 @@ fun PcmeDetailScreen(
 
                     // Concussion
                     item {
-                        GolazoCard {
-                            SectionHeader("Concussion (SCAT)")
+                        PcmeSection("Concussion (SCAT)", Icons.Default.Psychology) {
                             pcme.scatScore?.let { PcmeRow("SCAT Score", "$it") }
                             pcme.scatDate?.let { PcmeRow("SCAT Date", it) }
                         }
@@ -74,15 +74,14 @@ fun PcmeDetailScreen(
                     // Vaccinations
                     if (pcme.vaccinePassport.isNotEmpty()) {
                         item {
-                            GolazoCard {
-                                SectionHeader("Vaccine Passport")
+                            PcmeSection("Vaccine Passport", Icons.Default.Vaccines) {
                                 pcme.vaccinePassport.forEach { v ->
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(vertical = 2.dp)
+                                            .padding(vertical = 3.dp)
                                     ) {
-                                        Text(v.vaccine, fontSize = 11.sp, modifier = Modifier.weight(1f))
+                                        Text(v.vaccine, fontSize = 12.sp, modifier = Modifier.weight(1f))
                                         Text(v.date, fontSize = 11.sp, color = TextSecondary)
                                     }
                                 }
@@ -93,8 +92,7 @@ fun PcmeDetailScreen(
                     // Medical Conditions
                     if (pcme.medicalConditions.isNotEmpty()) {
                         item {
-                            GolazoCard {
-                                SectionHeader("Medical Conditions")
+                            PcmeSection("Medical Conditions", Icons.Default.MedicalInformation) {
                                 pcme.medicalConditions.forEach { c ->
                                     Text(c.condition, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                                     Text(c.notes, fontSize = 11.sp, color = TextSecondary)
@@ -107,8 +105,7 @@ fun PcmeDetailScreen(
                     // Medications
                     if (pcme.currentMedications.isNotEmpty()) {
                         item {
-                            GolazoCard {
-                                SectionHeader("Current Medications")
+                            PcmeSection("Current Medications", Icons.Default.Medication) {
                                 pcme.currentMedications.forEach { m ->
                                     PcmeRow(m.medication, "${m.dosage} - ${m.frequency}")
                                 }
@@ -119,8 +116,7 @@ fun PcmeDetailScreen(
                     // Prescriptions
                     if (pcme.prescriptions.isNotEmpty()) {
                         item {
-                            GolazoCard {
-                                SectionHeader("Prescriptions")
+                            PcmeSection("Prescriptions", Icons.Default.Receipt) {
                                 pcme.prescriptions.forEach { p ->
                                     Text(p.name, fontSize = 12.sp, fontWeight = FontWeight.Medium)
                                     Text("${p.dosage} - ${p.frequency} (by ${p.prescribedBy})", fontSize = 11.sp, color = TextSecondary)
@@ -133,8 +129,7 @@ fun PcmeDetailScreen(
                     // Allergies
                     pcme.allergies?.let {
                         item {
-                            GolazoCard {
-                                SectionHeader("Allergies")
+                            PcmeSection("Allergies", Icons.Default.Warning) {
                                 Text(it, fontSize = 12.sp)
                             }
                         }
@@ -142,8 +137,7 @@ fun PcmeDetailScreen(
 
                     // Other
                     item {
-                        GolazoCard {
-                            SectionHeader("Other")
+                        PcmeSection("Other", Icons.Default.MoreHoriz) {
                             pcme.asthma?.let { PcmeRow("Asthma", it) }
                             pcme.hepatitisB?.let { PcmeRow("Hepatitis B", it) }
                             pcme.tetanusStatus?.let { PcmeRow("Tetanus", it) }
@@ -154,9 +148,8 @@ fun PcmeDetailScreen(
                     // Signature
                     if (pcme.termsAccepted) {
                         item {
-                            GolazoCard {
-                                SectionHeader("Signature")
-                                PcmeRow("Terms Accepted", pcme.termsAcceptedAt ?: "Yes")
+                            PcmeSection("Signature", Icons.Default.Draw) {
+                                PcmeRow("Terms Accepted", pcme.termsAcceptedAt?.take(10) ?: "Yes")
                                 pcme.signatureData?.let {
                                     Text("Signature: ${it.take(20)}...", fontSize = 10.sp, color = TextSecondary)
                                 }
@@ -172,13 +165,33 @@ fun PcmeDetailScreen(
 }
 
 @Composable
+private fun PcmeSection(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = CardWhite,
+        shadowElevation = 4.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            }
+            Spacer(Modifier.height(12.dp))
+            content()
+        }
+    }
+}
+
+@Composable
 private fun PcmeRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp)
+            .padding(vertical = 3.dp)
     ) {
         Text(label, fontSize = 11.sp, color = TextSecondary, modifier = Modifier.weight(1f))
-        Text(value, fontSize = 11.sp, fontWeight = FontWeight.Medium)
+        Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium)
     }
 }

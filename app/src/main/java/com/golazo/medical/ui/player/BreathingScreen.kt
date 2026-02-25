@@ -136,7 +136,8 @@ fun BreathingScreen(
                 Text("Session Complete!", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = SeverityMinor)
                 Spacer(Modifier.height(24.dp))
 
-                GolazoCard {
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                     Text("Session Summary", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(12.dp))
                     SummaryRow("Protocol", selectedProtocol.name)
@@ -145,6 +146,7 @@ fun BreathingScreen(
                     SummaryRow("Stress", "$simStress%")
                     SummaryRow("HRV", "$simHrv ms")
                     SummaryRow("Coherence", "$simCoherence%")
+                    }
                 }
 
                 Spacer(Modifier.height(16.dp))
@@ -217,7 +219,8 @@ fun BreathingScreen(
 
                 // Biofeedback (simulated)
                 if (isActive) {
-                    GolazoCard {
+                    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp)) {
                         Text("Live Biofeedback", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(8.dp))
                         Row(
@@ -228,6 +231,7 @@ fun BreathingScreen(
                             BioItem("Stress", "$simStress", "%", StressModerate)
                             BioItem("HRV", "$simHrv", "ms", UefaBlue)
                             BioItem("Coh.", "$simCoherence", "%", SeverityMinor)
+                        }
                         }
                     }
                 }

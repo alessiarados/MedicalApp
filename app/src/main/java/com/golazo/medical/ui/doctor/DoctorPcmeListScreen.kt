@@ -5,10 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,12 +38,12 @@ fun DoctorPcmeListScreen(
     }
 
     Scaffold(
-        topBar = { GolazoTopBar(title = "PCME Records") },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showPlayerPicker = true },
                 containerColor = UefaBlue,
-                contentColor = White
+                contentColor = White,
+                shape = CircleShape
             ) {
                 Icon(Icons.Default.Add, "New PCME")
             }
@@ -58,46 +61,46 @@ fun DoctorPcmeListScreen(
             )
         } else {
             LazyColumn(
+                modifier = Modifier.statusBarsPadding(),
                 contentPadding = PaddingValues(
                     start = 16.dp, end = 16.dp,
-                    top = padding.calculateTopPadding() + 8.dp,
-                    bottom = padding.calculateBottomPadding() + 80.dp
+                    top = 8.dp,
+                    bottom = padding.calculateBottomPadding() + 90.dp
                 ),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                item {
+                    Column {
+                        Text("PCME Records", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Text("${entries.size} records", fontSize = 12.sp, color = TextSecondary)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
                 items(entries) { entry ->
-                    GolazoCard(
-                        modifier = Modifier.clickable { onEntryClick(entry.id) }
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().clickable { onEntryClick(entry.id) },
+                        shape = RoundedCornerShape(20.dp),
+                        color = CardWhite,
+                        shadowElevation = 4.dp
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column {
+                        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Surface(shape = CircleShape, color = UefaBlueVeryLight, modifier = Modifier.size(40.dp)) {
+                                Icon(Icons.Default.Assignment, null, tint = UefaBlue, modifier = Modifier.padding(8.dp))
+                            }
+                            Spacer(Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text("PCME Record", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text("Patient: ${entry.userId.take(8)}...", fontSize = 10.sp, color = TextSecondary)
-                                Text(entry.recordedAt, fontSize = 10.sp, color = TextSecondary)
+                                Text(entry.recordedAt.take(10), fontSize = 10.sp, color = TextSecondary)
+                                Spacer(Modifier.height(6.dp))
+                                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    Surface(shape = RoundedCornerShape(8.dp), color = UefaBlueVeryLight) {
+                                        Text(entry.bloodType, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = UefaBlue, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+                                    }
+                                    entry.height?.let { Text("${it} cm", fontSize = 10.sp, color = TextSecondary) }
+                                    entry.weight?.let { Text("${it} kg", fontSize = 10.sp, color = TextSecondary) }
+                                }
                             }
                             Icon(Icons.Default.ChevronRight, null, tint = TextSecondary)
-                        }
-                        Spacer(Modifier.height(8.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                            Column {
-                                Text("Blood Type", fontSize = 10.sp, color = TextSecondary)
-                                Text(entry.bloodType, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                            }
-                            entry.height?.let {
-                                Column {
-                                    Text("Height", fontSize = 10.sp, color = TextSecondary)
-                                    Text(it, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
-                            entry.weight?.let {
-                                Column {
-                                    Text("Weight", fontSize = 10.sp, color = TextSecondary)
-                                    Text(it, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
                         }
                     }
                 }

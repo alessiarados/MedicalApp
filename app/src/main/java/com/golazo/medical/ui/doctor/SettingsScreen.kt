@@ -25,97 +25,121 @@ fun SettingsScreen(
 ) {
     val user = viewModel.sessionManager.currentUser.value
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundGray)
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp)
     ) {
-        GolazoTopBar(title = "Settings")
+        // Header
+        item {
+            Column {
+                Text("Settings", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("Manage your account", fontSize = 12.sp, color = TextSecondary)
+            }
+            Spacer(Modifier.height(16.dp))
+        }
 
-        LazyColumn(
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
             // Account Info
             item {
-                GolazoCard {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        InitialsAvatar(user?.email ?: "Doctor", UefaBlue, 56)
+                Surface(shape = RoundedCornerShape(16.dp), color = UefaBlue, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                        InitialsAvatar(user?.email ?: "Doctor", White, 56)
                         Spacer(Modifier.width(16.dp))
                         Column {
-                            Text("Doctor Account", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                            Text(user?.email ?: "", fontSize = 12.sp, color = TextSecondary)
-                            Text("Role: ${user?.role?.replaceFirstChar { it.uppercase() }}", fontSize = 11.sp, color = TextSecondary)
+                            Text("Doctor Account", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = White)
+                            Text(user?.email ?: "", fontSize = 12.sp, color = White.copy(alpha = 0.8f))
+                            Text("Role: ${user?.role?.replaceFirstChar { it.uppercase() }}", fontSize = 11.sp, color = White.copy(alpha = 0.7f))
                         }
                     }
                 }
+                Spacer(Modifier.height(16.dp))
             }
 
             // Settings Sections
             item {
-                SectionHeader("Account")
-                SettingsItem(Icons.Default.Person, "Profile Information", "Manage your account details")
-                SettingsItem(Icons.Default.Lock, "Security", "Password, 2FA settings")
-                SettingsItem(Icons.Default.Notifications, "Notifications", "Configure alert preferences")
+                SettingsGroup("Account", listOf(
+                    Triple(Icons.Default.Person, "Profile Information", "Manage your account details"),
+                    Triple(Icons.Default.Lock, "Security", "Password, 2FA settings"),
+                    Triple(Icons.Default.Notifications, "Notifications", "Configure alert preferences")
+                ))
+                Spacer(Modifier.height(12.dp))
             }
 
             item {
-                SectionHeader("Preferences")
-                SettingsItem(Icons.Default.Language, "Language", "English")
-                SettingsItem(Icons.Default.DarkMode, "Appearance", "Light mode")
-                SettingsItem(Icons.Default.DataUsage, "Data & Storage", "Manage cached data")
+                SettingsGroup("Preferences", listOf(
+                    Triple(Icons.Default.Language, "Language", "English"),
+                    Triple(Icons.Default.DarkMode, "Appearance", "Light mode"),
+                    Triple(Icons.Default.DataUsage, "Data & Storage", "Manage cached data")
+                ))
+                Spacer(Modifier.height(12.dp))
             }
 
             item {
-                SectionHeader("Support")
-                SettingsItem(Icons.Default.Help, "Help Center", "FAQs and documentation")
-                SettingsItem(Icons.Default.BugReport, "Report a Bug", "Send feedback to developers")
-                SettingsItem(Icons.Default.Info, "About", "Golazo Medical v1.0")
+                SettingsGroup("Support", listOf(
+                    Triple(Icons.Default.Help, "Help Center", "FAQs and documentation"),
+                    Triple(Icons.Default.BugReport, "Report a Bug", "Send feedback to developers"),
+                    Triple(Icons.Default.Info, "About", "UEFA Medical Analyst v1.0")
+                ))
+                Spacer(Modifier.height(12.dp))
             }
 
             item {
-                SectionHeader("Legal")
-                SettingsItem(Icons.Default.Description, "Terms of Service", "View terms")
-                SettingsItem(Icons.Default.PrivacyTip, "Privacy Policy", "View privacy policy")
-                SettingsItem(Icons.Default.Cookie, "Cookie Policy", "Manage cookies")
+                SettingsGroup("Legal", listOf(
+                    Triple(Icons.Default.Description, "Terms of Service", "View terms"),
+                    Triple(Icons.Default.PrivacyTip, "Privacy Policy", "View privacy policy"),
+                    Triple(Icons.Default.Cookie, "Cookie Policy", "Manage cookies")
+                ))
+                Spacer(Modifier.height(16.dp))
             }
 
             item {
-                Spacer(Modifier.height(8.dp))
                 GolazoButton(
                     text = "Sign Out",
                     onClick = onLogout,
                     containerColor = SeveritySevere
                 )
             }
-
-            item { Spacer(Modifier.height(80.dp)) }
         }
-    }
 }
 
 @Composable
-private fun SettingsItem(icon: ImageVector, title: String, subtitle: String) {
-    GolazoCard(modifier = Modifier.padding(vertical = 2.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = UefaBlueVeryLight,
-                modifier = Modifier.size(36.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(20.dp))
+private fun SettingsGroup(title: String, items: List<Triple<ImageVector, String, String>>) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = CardWhite,
+        shadowElevation = 4.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = TextSecondary)
+            Spacer(Modifier.height(12.dp))
+            items.forEachIndexed { index, (icon, itemTitle, subtitle) ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = UefaBlueVeryLight,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(20.dp))
+                        }
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(itemTitle, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+                        Text(subtitle, fontSize = 10.sp, color = TextSecondary)
+                    }
+                    Icon(Icons.Default.ChevronRight, null, tint = TextSecondary, modifier = Modifier.size(18.dp))
+                }
+                if (index < items.lastIndex) {
+                    HorizontalDivider(modifier = Modifier.padding(start = 48.dp))
                 }
             }
-            Spacer(Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(title, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-                Text(subtitle, fontSize = 10.sp, color = TextSecondary)
-            }
-            Icon(Icons.Default.ChevronRight, null, tint = TextSecondary, modifier = Modifier.size(18.dp))
         }
     }
 }

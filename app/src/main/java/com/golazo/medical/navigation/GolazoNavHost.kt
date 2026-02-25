@@ -70,8 +70,8 @@ private fun GolazoNavHostContent(navController: NavHostController) {
             if (showBottomNav) {
                 val items = if (isPlayerTab) playerNavItems else doctorNavItems
                 NavigationBar(
-                    containerColor = White,
-                    tonalElevation = 8.dp
+                    containerColor = CardWhite,
+                    tonalElevation = 12.dp
                 ) {
                     items.forEach { item ->
                         NavigationBarItem(
@@ -205,7 +205,13 @@ private fun GolazoNavHostContent(navController: NavHostController) {
 
             // ===== PLAYER SCREENS =====
             composable(Routes.PLAYER_HOME) {
-                PlayerHomeScreen()
+                PlayerHomeScreen(
+                    onSignOut = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
 
             composable(Routes.PLAYER_INJURIES) {

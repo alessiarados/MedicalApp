@@ -3,6 +3,7 @@ package com.golazo.medical.ui.player
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -73,7 +74,8 @@ fun ConsentCreateScreen(
                 .padding(16.dp)
         ) {
             // Grantee Type
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Grantee Type", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 granteeTypes.forEach { (value, label) ->
@@ -87,11 +89,13 @@ fun ConsentCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Grantee Details
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Grantee Details", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = granteeName, onValueChange = { granteeName = it }, label = "Grantee Name")
@@ -105,11 +109,13 @@ fun ConsentCreateScreen(
                     keyboardType = KeyboardType.Email
                 )
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Scopes
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Data Scopes", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 scopeSelections.forEachIndexed { index, sel ->
@@ -165,6 +171,7 @@ fun ConsentCreateScreen(
                         }
                     }
                 }
+            }
             }
 
             Spacer(Modifier.height(16.dp))

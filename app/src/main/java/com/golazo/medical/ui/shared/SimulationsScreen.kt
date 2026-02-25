@@ -34,9 +34,9 @@ fun SimulationsScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                GolazoCard {
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(Icons.Default.SportsFootball, null, tint = UefaBlue, modifier = Modifier.size(48.dp))
@@ -74,7 +74,8 @@ fun SimulationsScreen(
 
 @Composable
 private fun SimulationCard(title: String, icon: ImageVector, description: String) {
-    GolazoCard {
+    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.Top) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
@@ -97,5 +98,6 @@ private fun SimulationCard(title: String, icon: ImageVector, description: String
                 )
             }
         }
+    }
     }
 }

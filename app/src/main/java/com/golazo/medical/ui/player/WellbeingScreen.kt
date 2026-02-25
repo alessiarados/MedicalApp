@@ -68,39 +68,49 @@ fun WellbeingScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray),
-        contentPadding = PaddingValues(bottom = 80.dp)
+            .background(BackgroundGray)
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp)
     ) {
-        // Blue Header Banner
+        // Header
         item {
-            Surface(
-                color = UefaBlue,
-                modifier = Modifier.fillMaxWidth()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(20.dp)
+                Column {
+                    Text("Wellbeing", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    Text("Take care of yourself today", fontSize = 12.sp, color = TextSecondary)
+                }
+                Surface(
+                    shape = RoundedCornerShape(50),
+                    color = UefaBlueVeryLight,
+                    modifier = Modifier.size(40.dp)
                 ) {
-                    Column {
-                        Text("Wellbeing", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = White)
-                        Text("Hello, take care of yourself today", fontSize = 12.sp, color = White.copy(alpha = 0.8f))
-                    }
-                    IconButton(
-                        onClick = onFindHelp,
-                        modifier = Modifier.align(Alignment.TopEnd)
-                    ) {
-                        Icon(Icons.Default.Shield, "Find Help", tint = White)
+                    IconButton(onClick = onFindHelp) {
+                        Icon(Icons.Default.Shield, "Find Help", tint = UefaBlue, modifier = Modifier.size(20.dp))
                     }
                 }
             }
+            Spacer(Modifier.height(16.dp))
         }
 
         // Your Status Right Now
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Your Status Right Now")
-                GolazoCard {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.MonitorHeart, null, tint = SeveritySevere, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Your Status Right Now", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.height(12.dp))
                     // Heart Rate with pulsing icon
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -197,13 +207,24 @@ fun WellbeingScreen(
                     GolazoButton(text = "Start Breathing Exercise", onClick = onBreathing)
                 }
             }
+            Spacer(Modifier.height(12.dp))
         }
 
         // Weekly Trends
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Weekly Trends")
-                GolazoCard {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.TrendingUp, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Weekly Trends", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.height(12.dp))
                     SparklineRow("Heart Rate", SimulatedData.weeklyHrData, SeveritySevere, "bpm")
                     Spacer(Modifier.height(12.dp))
                     SparklineRow("Stress", SimulatedData.weeklyStressData, StressModerate, "%")
@@ -229,20 +250,34 @@ fun WellbeingScreen(
                     }
 
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        "Your last session improved coherence by 37% and reduced stress significantly.",
-                        fontSize = 10.sp,
-                        color = UefaBlue
-                    )
+                    Surface(shape = RoundedCornerShape(8.dp), color = UefaBlueVeryLight) {
+                        Text(
+                            "Your last session improved coherence by 37% and reduced stress significantly.",
+                            fontSize = 10.sp,
+                            color = UefaBlue,
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
+            Spacer(Modifier.height(12.dp))
         }
 
         // Recommended for You
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Recommended for You")
-                GolazoCard {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.AutoAwesome, null, tint = Color(0xFFFF9800), modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Recommended for You", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.height(12.dp))
                     Surface(
                         shape = RoundedCornerShape(6.dp),
                         color = UefaBlueVeryLight
@@ -262,13 +297,24 @@ fun WellbeingScreen(
                     GolazoOutlinedButton(text = "View Sessions", onClick = onSessions)
                 }
             }
+            Spacer(Modifier.height(12.dp))
         }
 
         // This Week Stats
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("This Week")
-                GolazoCard {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.CalendarMonth, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("This Week", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    Spacer(Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly

@@ -52,8 +52,8 @@ fun SessionDetailScreen(
             ) {
                 // Audio Player
                 item {
-                    GolazoCard {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Surface(
                                 shape = RoundedCornerShape(6.dp),
                                 color = UefaBlueVeryLight
@@ -104,19 +104,19 @@ fun SessionDetailScreen(
 
                 // Description
                 item {
-                    GolazoCard {
+                    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp)) {
                         Text("About", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                         Spacer(Modifier.height(4.dp))
                         Text(s.description, fontSize = 12.sp, color = TextSecondary)
+                        }
                     }
                 }
 
                 // Step-by-step guidance
                 item {
-                    GolazoCard {
-                        Text("Guidance Steps", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                        Spacer(Modifier.height(8.dp))
-                    }
+                    Text("Guidance Steps", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(8.dp))
                 }
 
                 itemsIndexed(s.steps) { index, step ->

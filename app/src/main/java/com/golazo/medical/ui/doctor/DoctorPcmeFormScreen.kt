@@ -3,6 +3,7 @@ package com.golazo.medical.ui.doctor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -62,8 +63,9 @@ fun DoctorPcmeFormScreen(
                 .padding(16.dp)
         ) {
             // General
-            GolazoCard {
-                SectionHeader("General Information")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("General Information", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Text("Blood Type", fontSize = 12.sp, color = TextSecondary)
                 Spacer(Modifier.height(4.dp))
                 FlowRow(
@@ -88,30 +90,36 @@ fun DoctorPcmeFormScreen(
                     GolazoTextField(value = weight, onValueChange = { weight = it }, label = "Weight (kg)", modifier = Modifier.weight(1f), keyboardType = KeyboardType.Number)
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Cardiac
-            GolazoCard {
-                SectionHeader("Cardiac")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("Cardiac", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 GolazoTextField(value = ecgStatus, onValueChange = { ecgStatus = it }, label = "ECG Status")
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = echoStatus, onValueChange = { echoStatus = it }, label = "Echo Status")
+            }
             }
 
             Spacer(Modifier.height(12.dp))
 
             // Concussion
-            GolazoCard {
-                SectionHeader("Concussion (SCAT)")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("Concussion (SCAT)", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 GolazoTextField(value = scatScore, onValueChange = { scatScore = it }, label = "SCAT Score", keyboardType = KeyboardType.Number)
+            }
             }
 
             Spacer(Modifier.height(12.dp))
 
             // Medical
-            GolazoCard {
-                SectionHeader("Medical History")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("Medical History", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 GolazoTextField(value = asthma, onValueChange = { asthma = it }, label = "Asthma Status")
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = hepatitisB, onValueChange = { hepatitisB = it }, label = "Hepatitis B Status")
@@ -120,17 +128,19 @@ fun DoctorPcmeFormScreen(
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = allergies, onValueChange = { allergies = it }, label = "Allergies", singleLine = false, maxLines = 3)
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Prescriptions (Doctor-only import feature)
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SectionHeader("Prescriptions")
+                    Text("Prescriptions", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     TextButton(onClick = { showImportDialog = true }) {
                         Text("+ Add", fontSize = 12.sp)
                     }
@@ -152,20 +162,24 @@ fun DoctorPcmeFormScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Notes
-            GolazoCard {
-                SectionHeader("Notes")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("Notes", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 GolazoTextField(value = notes, onValueChange = { notes = it }, label = "Additional Notes", singleLine = false, maxLines = 4)
+            }
             }
 
             Spacer(Modifier.height(12.dp))
 
             // Terms & Signature
-            GolazoCard {
-                SectionHeader("Terms & Signature")
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                Text("Terms & Signature", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = termsAccepted,
@@ -176,6 +190,7 @@ fun DoctorPcmeFormScreen(
                 }
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = signature, onValueChange = { signature = it }, label = "Doctor Signature (Full Name)")
+            }
             }
 
             Spacer(Modifier.height(16.dp))

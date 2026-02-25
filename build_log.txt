@@ -34,7 +34,22 @@ Daemon will be stopped at the end of the build
 > Task :app:writeDebugAppMetadata UP-TO-DATE
 > Task :app:writeDebugSigningConfigVersions UP-TO-DATE
 > Task :app:kspDebugKotlin
+
 > Task :app:compileDebugKotlin
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/navigation/GolazoNavHost.kt:46:69 'val Icons.Filled.MenuBook: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.MenuBook.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/DoctorHomeScreen.kt:155:44 'val Icons.Filled.Assignment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Assignment.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/DoctorPcmeHistoryScreen.kt:64:52 'val Icons.Filled.Assignment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Assignment.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/DoctorPcmeListScreen.kt:88:52 'val Icons.Filled.Assignment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Assignment.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/DoctorPlayerDetailScreen.kt:138:68 'val Icons.Filled.Assignment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Assignment.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/DoctorPlayerDetailScreen.kt:169:68 'val Icons.Filled.DirectionsRun: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.DirectionsRun.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/PlaybookScreen.kt:130:44 'val Icons.Filled.Article: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Article.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/doctor/SettingsScreen.kt:81:42 'val Icons.Filled.Help: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Help.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/player/FindHelpScreen.kt:224:69 'val Icons.Filled.Chat: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Chat.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/player/PcmeListScreen.kt:101:48 'val Icons.Filled.Assignment: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Assignment.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/player/PlayerHomeScreen.kt:741:56 'val Icons.Filled.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Logout.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/player/WellbeingScreen.kt:223:44 'val Icons.Filled.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.TrendingUp.
+w: file:///C:/Users/arados/CascadeProjects/GolazoMedical/app/src/main/java/com/golazo/medical/ui/shared/SimulationsScreen.kt:60:57 'val Icons.Filled.CompareArrows: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.CompareArrows.
+
 > Task :app:compileDebugJavaWithJavac UP-TO-DATE
 > Task :app:hiltAggregateDepsDebug UP-TO-DATE
 > Task :app:hiltJavaCompileDebug UP-TO-DATE
@@ -48,5 +63,5 @@ Daemon will be stopped at the end of the build
 > Task :app:createDebugApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebug
 
-BUILD SUCCESSFUL in 38s
+BUILD SUCCESSFUL in 49s
 38 actionable tasks: 6 executed, 32 up-to-date

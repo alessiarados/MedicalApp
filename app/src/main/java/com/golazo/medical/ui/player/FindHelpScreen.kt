@@ -32,22 +32,26 @@ fun FindHelpScreen(
     var selectedSlot by remember { mutableStateOf("") }
     var bookingConfirmed by remember { mutableStateOf(false) }
 
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray),
-        contentPadding = PaddingValues(bottom = 80.dp)
+            .background(BackgroundGray)
     ) {
-        // Header
+        GolazoTopBar(title = "Find Help", onBack = onBack)
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp)
+    ) {
+        // Privacy Header Card
         item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(UefaBlue)
-                    .statusBarsPadding()
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = UefaBlue,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                GolazoTopBar(title = "Find Help", onBack = onBack)
-                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+                Column(modifier = Modifier.padding(20.dp)) {
                     Text("Your Privacy Is Absolute", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = White)
                     Spacer(Modifier.height(4.dp))
                     Text(
@@ -57,14 +61,13 @@ fun FindHelpScreen(
                     )
                 }
             }
+            Spacer(Modifier.height(12.dp))
         }
 
         // Privacy Badges
         item {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 listOf(
@@ -92,9 +95,11 @@ fun FindHelpScreen(
 
         // Your Sessions
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Your Sessions")
-                GolazoCard {
+            Column {
+                Text("Your Sessions", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(8.dp))
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                     if (SimulatedData.upcomingSessions.isEmpty()) {
                         Text("No upcoming sessions", fontSize = 12.sp, color = TextSecondary)
                     } else {
@@ -125,27 +130,33 @@ fun FindHelpScreen(
                             }
                         }
                     }
+                    }
                 }
             }
         }
 
         // Psychologist Directory
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Available Professionals")
-            }
+            Spacer(Modifier.height(8.dp))
+            Text("Available Professionals", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(8.dp))
         }
 
         items(SimulatedData.psychologists) { psych ->
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
-                GolazoCard(
-                    modifier = Modifier.clickable {
-                        selectedPsychologist = if (selectedPsychologist?.id == psych.id) null else psych
-                        selectedSessionType = ""
-                        selectedSlot = ""
-                        bookingConfirmed = false
-                    }
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            selectedPsychologist = if (selectedPsychologist?.id == psych.id) null else psych
+                            selectedSessionType = ""
+                            selectedSlot = ""
+                            bookingConfirmed = false
+                        },
+                    shape = RoundedCornerShape(20.dp),
+                    color = CardWhite,
+                    shadowElevation = 4.dp
                 ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.Top) {
                         // Avatar
                         Box {
@@ -241,31 +252,32 @@ fun FindHelpScreen(
                             )
                         }
                     }
+                    }
                 }
-            }
+                Spacer(Modifier.height(8.dp))
         }
 
         // Privacy Reminder
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = UefaBlueVeryLight
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = UefaBlueVeryLight,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Shield, null, tint = UefaBlue, modifier = Modifier.size(24.dp))
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            "All sessions are confidential and protected. Your club and team staff cannot access any information from these sessions.",
-                            fontSize = 10.sp,
-                            color = UefaBlue
-                        )
-                    }
+                    Icon(Icons.Default.Shield, null, tint = UefaBlue, modifier = Modifier.size(24.dp))
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        "All sessions are confidential and protected. Your club and team staff cannot access any information from these sessions.",
+                        fontSize = 10.sp,
+                        color = UefaBlue
+                    )
                 }
             }
         }
+    }
     }
 }

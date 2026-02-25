@@ -40,50 +40,50 @@ fun SessionsScreen(
     ) {
         GolazoTopBar(title = "Wellbeing Sessions", onBack = onBack)
 
-        // Category Filter
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            FilterChip(
-                selected = selectedCategory == null,
-                onClick = { selectedCategory = null },
-                label = { Text("All", fontSize = 10.sp) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = UefaBlue,
-                    selectedLabelColor = White
-                )
-            )
-            categories.take(3).forEach { cat ->
-                FilterChip(
-                    selected = selectedCategory == cat,
-                    onClick = { selectedCategory = if (selectedCategory == cat) null else cat },
-                    label = { Text(cat, fontSize = 10.sp) },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = UefaBlue,
-                        selectedLabelColor = White
-                    )
-                )
-            }
-        }
-
         LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Category Filter
+            item {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    FilterChip(
+                        selected = selectedCategory == null,
+                        onClick = { selectedCategory = null },
+                        label = { Text("All", fontSize = 10.sp) },
+                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = UefaBlue, selectedLabelColor = White)
+                    )
+                    categories.forEach { cat ->
+                        FilterChip(
+                            selected = selectedCategory == cat,
+                            onClick = { selectedCategory = if (selectedCategory == cat) null else cat },
+                            label = { Text(cat, fontSize = 10.sp) },
+                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = UefaBlue, selectedLabelColor = White)
+                        )
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+
             items(filtered) { session ->
-                GolazoCard(
-                    modifier = Modifier.clickable { onSessionClick(session.id) }
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onSessionClick(session.id) },
+                    shape = RoundedCornerShape(20.dp),
+                    color = CardWhite,
+                    shadowElevation = 4.dp
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.padding(16.dp),
                         verticalAlignment = Alignment.Top
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Surface(
-                                shape = RoundedCornerShape(6.dp),
+                                shape = RoundedCornerShape(8.dp),
                                 color = UefaBlueVeryLight
                             ) {
                                 Text(
@@ -91,7 +91,7 @@ fun SessionsScreen(
                                     fontSize = 9.sp,
                                     color = UefaBlue,
                                     fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                             }
                             Spacer(Modifier.height(6.dp))
@@ -107,7 +107,6 @@ fun SessionsScreen(
                     }
                 }
             }
-            item { Spacer(Modifier.height(80.dp)) }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.golazo.medical.ui.doctor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
@@ -62,7 +63,8 @@ fun DoctorInjuryCreateScreen(
                 .padding(16.dp)
         ) {
             // Player Selector
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Select Player", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 ExposedDropdownMenuBox(
@@ -94,11 +96,13 @@ fun DoctorInjuryCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Body Area
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Body Area", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 FlowRow(
@@ -118,10 +122,12 @@ fun DoctorInjuryCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Mechanism", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(
@@ -137,10 +143,12 @@ fun DoctorInjuryCreateScreen(
                     }
                 )
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Severity", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Row(
@@ -159,10 +167,12 @@ fun DoctorInjuryCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Details", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(value = injuryCategory, onValueChange = { injuryCategory = it }, label = "Category")
@@ -175,6 +185,7 @@ fun DoctorInjuryCreateScreen(
                     Checkbox(checked = isReinjury, onCheckedChange = { isReinjury = it }, colors = CheckboxDefaults.colors(checkedColor = UefaBlue))
                     Text("Re-injury", fontSize = 12.sp)
                 }
+            }
             }
 
             Spacer(Modifier.height(16.dp))

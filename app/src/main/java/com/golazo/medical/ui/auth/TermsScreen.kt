@@ -3,6 +3,7 @@ package com.golazo.medical.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,7 +43,8 @@ fun TermsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
                 Text("UEFA Medical Platform", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text("Terms & Conditions", fontSize = 12.sp, color = TextSecondary)
                 Spacer(Modifier.height(16.dp))
@@ -61,10 +63,12 @@ fun TermsScreen(
                     Spacer(Modifier.height(12.dp))
                 }
             }
+            }
 
             Spacer(Modifier.height(16.dp))
 
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(20.dp)) {
                 Text("Signature", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Text("Type your full name as your digital signature", fontSize = 11.sp, color = TextSecondary)
@@ -74,6 +78,7 @@ fun TermsScreen(
                     onValueChange = viewModel::updateSignature,
                     label = "Full Name Signature"
                 )
+            }
             }
 
             Spacer(Modifier.height(16.dp))

@@ -5,10 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,72 +31,100 @@ fun PcmeListScreen(
 
     LaunchedEffect(Unit) { viewModel.loadPcmeEntries() }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundGray)
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp)
     ) {
-        GolazoTopBar(title = "PCME Records")
+        // Header
+        item {
+            Column {
+                Text("PCME Records", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text("Pre-competition medical examinations", fontSize = 12.sp, color = TextSecondary)
+            }
+            Spacer(Modifier.height(16.dp))
+        }
 
-        if (isLoading) {
-            LoadingScreen()
-        } else if (entries.isEmpty()) {
-            EmptyState(
-                icon = Icons.Default.MedicalServices,
-                title = "No PCME records",
-                subtitle = "Your pre-competition medical examinations will appear here"
-            )
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+        // Status card
+        item {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = UefaBlue,
+                shadowElevation = 4.dp,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                items(entries) { entry ->
-                    GolazoCard(
-                        modifier = Modifier.clickable { onEntryClick(entry.id) }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column {
-                                Text("PCME Record", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text(entry.recordedAt, fontSize = 11.sp, color = TextSecondary)
-                            }
-                            Icon(Icons.Default.ChevronRight, null, tint = TextSecondary)
-                        }
-                        Spacer(Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            Column {
-                                Text("Blood Type", fontSize = 10.sp, color = TextSecondary)
-                                Text(entry.bloodType, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                            }
-                            entry.height?.let {
-                                Column {
-                                    Text("Height", fontSize = 10.sp, color = TextSecondary)
-                                    Text(it, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
-                            entry.weight?.let {
-                                Column {
-                                    Text("Weight", fontSize = 10.sp, color = TextSecondary)
-                                    Text(it, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
-                            entry.scatScore?.let {
-                                Column {
-                                    Text("SCAT", fontSize = 10.sp, color = TextSecondary)
-                                    Text("$it", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                }
-                            }
-                        }
+                Row(
+                    modifier = Modifier.padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(shape = CircleShape, color = White.copy(alpha = 0.2f), modifier = Modifier.size(48.dp)) {
+                        Icon(Icons.Default.MedicalServices, null, tint = White, modifier = Modifier.padding(12.dp))
+                    }
+                    Spacer(Modifier.width(16.dp))
+                    Column {
+                        Text("${entries.size} Record${if (entries.size != 1) "s" else ""}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = White)
+                        Text(
+                            if (entries.isNotEmpty()) "Last exam: ${entries.first().recordedAt.take(10)}" else "No records yet",
+                            fontSize = 12.sp,
+                            color = White.copy(alpha = 0.7f)
+                        )
                     }
                 }
-                item { Spacer(Modifier.height(80.dp)) }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+
+        if (isLoading) {
+            item { LoadingScreen() }
+        } else if (entries.isEmpty()) {
+            item {
+                EmptyState(
+                    icon = Icons.Default.MedicalServices,
+                    title = "No PCME records",
+                    subtitle = "Your pre-competition medical examinations will appear here"
+                )
+            }
+        } else {
+            items(entries) { entry ->
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onEntryClick(entry.id) },
+                    shape = RoundedCornerShape(20.dp),
+                    color = CardWhite,
+                    shadowElevation = 4.dp
+                ) {
+                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Surface(shape = CircleShape, color = UefaBlueVeryLight, modifier = Modifier.size(44.dp)) {
+                            Icon(Icons.Default.Assignment, null, tint = UefaBlue, modifier = Modifier.padding(10.dp))
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text("PCME Record", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text(entry.recordedAt.take(10), fontSize = 11.sp, color = TextSecondary)
+                            Spacer(Modifier.height(8.dp))
+                            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                PcmeMiniStat("Blood", entry.bloodType)
+                                entry.height?.let { PcmeMiniStat("Ht", "${it}cm") }
+                                entry.weight?.let { PcmeMiniStat("Wt", "${it}kg") }
+                                entry.scatScore?.let { PcmeMiniStat("SCAT", "$it") }
+                            }
+                        }
+                        Icon(Icons.Default.ChevronRight, null, tint = TextSecondary)
+                    }
+                }
+                Spacer(Modifier.height(8.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun PcmeMiniStat(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(value, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = UefaBlue)
+        Text(label, fontSize = 9.sp, color = TextSecondary)
     }
 }

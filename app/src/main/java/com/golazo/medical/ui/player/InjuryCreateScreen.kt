@@ -3,11 +3,13 @@ package com.golazo.medical.ui.player
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,7 +56,8 @@ fun InjuryCreateScreen(
                 .padding(16.dp)
         ) {
             // Body Area
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Body Area", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 FlowRow(
@@ -74,11 +77,13 @@ fun InjuryCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Mechanism
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("How did it happen?", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(
@@ -94,11 +99,13 @@ fun InjuryCreateScreen(
                     }
                 )
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Severity
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Severity", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 Row(
@@ -124,11 +131,13 @@ fun InjuryCreateScreen(
                     }
                 }
             }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Additional Details
-            GolazoCard {
+            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
                 Text("Additional Details", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(8.dp))
                 GolazoTextField(
@@ -149,7 +158,7 @@ fun InjuryCreateScreen(
                     label = "Injury Date (YYYY-MM-DD)"
                 )
                 Spacer(Modifier.height(8.dp))
-                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = isReinjury,
                         onCheckedChange = { isReinjury = it },
@@ -157,6 +166,7 @@ fun InjuryCreateScreen(
                     )
                     Text("This is a re-injury", fontSize = 12.sp)
                 }
+            }
             }
 
             Spacer(Modifier.height(16.dp))

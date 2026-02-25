@@ -2,6 +2,7 @@ package com.golazo.medical.ui.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -80,7 +81,8 @@ fun ConsentInviteScreen(
                     Text("Invitation Sent", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = UefaBlue)
                     Spacer(Modifier.height(24.dp))
 
-                    GolazoCard {
+                    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp)) {
                         DetailRow("Recipient", inv.recipientName)
                         DetailRow("Email", inv.recipientEmail)
                         inv.granteeOrg?.let { DetailRow("Organization", it) }
@@ -95,7 +97,7 @@ fun ConsentInviteScreen(
                         Spacer(Modifier.height(8.dp))
                         Surface(
                             color = BackgroundGray,
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
                                 "Token: ${inv.token.take(16)}...",
@@ -103,6 +105,7 @@ fun ConsentInviteScreen(
                                 color = TextSecondary,
                                 modifier = Modifier.padding(8.dp)
                             )
+                        }
                         }
                     }
 

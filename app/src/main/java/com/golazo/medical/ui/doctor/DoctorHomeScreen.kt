@@ -1,8 +1,10 @@
 package com.golazo.medical.ui.doctor
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,8 +12,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,128 +39,494 @@ fun DoctorHomeScreen(
     val players by viewModel.players.collectAsStateWithLifecycle()
     val injuries by viewModel.injuries.collectAsStateWithLifecycle()
     val pcmeEntries by viewModel.pcmeEntries.collectAsStateWithLifecycle()
+    val trainingSessions by viewModel.trainingSessions.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadPlayers()
         viewModel.loadInjuries()
         viewModel.loadPcmeEntries()
+        viewModel.loadTrainingSessions()
     }
+
+    val totalPlayers = players.size.coerceAtLeast(1)
+    val openInjuries = injuries.filter { it.status == "open" }
+    val injuredPlayerIds = openInjuries.map { it.userId }.toSet()
+    val availablePlayers = totalPlayers - injuredPlayerIds.size
+    val availabilityPercent = (availablePlayers.toFloat() / totalPlayers * 100).toInt()
+
+    val doctorName = viewModel.sessionManager.currentUser.value?.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() } ?: "Doctor"
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray),
-        contentPadding = PaddingValues(bottom = 80.dp)
+            .background(BackgroundGray)
+            .statusBarsPadding(),
+        contentPadding = PaddingValues(bottom = 90.dp)
     ) {
-        // Header
+        // ── Hero Card ──
         item {
             Surface(
-                color = UefaBlue,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(20.dp)
-                ) {
-                    Text("Doctor Dashboard", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = White)
-                    Text("Medical Staff Overview", fontSize = 12.sp, color = White.copy(alpha = 0.8f))
-                }
-            }
-        }
-
-        // Stats Overview
-        item {
-            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(16.dp),
+                shape = RoundedCornerShape(24.dp),
+                color = UefaBlue,
+                shadowElevation = 12.dp
             ) {
-                StatCard("Players", "${players.size}", Icons.Default.People, Modifier.weight(1f))
-                StatCard("Injuries", "${injuries.size}", Icons.Default.LocalHospital, Modifier.weight(1f))
-                StatCard("PCMEs", "${pcmeEntries.size}", Icons.Default.MedicalServices, Modifier.weight(1f))
-            }
-        }
-
-        // Open Injuries
-        item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Open Injuries")
-                val openInjuries = injuries.filter { it.status == "open" }.take(3)
-                if (openInjuries.isEmpty()) {
-                    GolazoCard {
-                        Text("No open injuries", fontSize = 12.sp, color = TextSecondary)
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(UefaBlueDark, UefaBlue, UefaBlueLight.copy(alpha = 0.8f))
+                            )
+                        )
+                        .padding(22.dp)
+                ) {
+                    // Role badge
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = AccentGold,
+                        modifier = Modifier.align(Alignment.TopStart)
+                    ) {
+                        Text(
+                            "Medical Staff",
+                            color = Color.White,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.5.sp,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                        )
                     }
-                } else {
-                    openInjuries.forEach { injury ->
-                        GolazoCard(modifier = Modifier.padding(vertical = 4.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(injury.bodyArea, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                                    Text(injury.mechanism, fontSize = 10.sp, color = TextSecondary, maxLines = 1)
-                                }
-                                Column(horizontalAlignment = Alignment.End) {
-                                    SeverityBadge(injury.severity)
-                                    Spacer(Modifier.height(4.dp))
-                                    RtpBadge(injury.rtpStatus)
-                                }
-                            }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp)
+                    ) {
+                        Text(
+                            "Dr. $doctorName",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = (-0.5).sp
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "UEFA Medical Analyst",
+                            color = Color.White.copy(alpha = 0.7f),
+                            fontSize = 13.sp,
+                            letterSpacing = 0.3.sp
+                        )
+                        Spacer(Modifier.height(16.dp))
+
+                        // Quick stats row
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            HeroStat("Squad", "$totalPlayers", Icons.Default.People)
+                            HeroStat("Injured", "${injuredPlayerIds.size}", Icons.Default.LocalHospital)
+                            HeroStat("PCMEs", "${pcmeEntries.size}", Icons.Default.MedicalServices)
+                            HeroStat("Sessions", "${trainingSessions.size}", Icons.Default.FitnessCenter)
                         }
                     }
                 }
             }
         }
 
-        // Quick Actions
+        // ── Squad Availability ──
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Quick Actions")
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    QuickAction("View Players", Icons.Default.People, onViewPlayers, Modifier.weight(1f))
-                    QuickAction("Create PCME", Icons.Default.MedicalServices, onViewPcme, Modifier.weight(1f))
-                }
-                Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    QuickAction("View Injuries", Icons.Default.LocalHospital, onViewInjuries, Modifier.weight(1f))
-                    QuickAction("Log Training", Icons.Default.FitnessCenter, onViewTraining, Modifier.weight(1f))
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Surface(shape = CircleShape, color = UefaBlue.copy(alpha = 0.12f), modifier = Modifier.size(32.dp)) {
+                            Icon(Icons.Default.Groups, null, tint = UefaBlue, modifier = Modifier.padding(6.dp))
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        Text("Squad Availability", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp)
+                    }
+                    Spacer(Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Donut chart
+                        Box(
+                            modifier = Modifier.size(120.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Canvas(modifier = Modifier.size(110.dp)) {
+                                val strokeWidth = 14.dp.toPx()
+                                val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
+                                val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
+
+                                // Background arc
+                                drawArc(
+                                    color = BackgroundGray,
+                                    startAngle = 0f,
+                                    sweepAngle = 360f,
+                                    useCenter = false,
+                                    topLeft = topLeft,
+                                    size = arcSize,
+                                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                                )
+                                // Available arc (green)
+                                val availableSweep = (availablePlayers.toFloat() / totalPlayers) * 360f
+                                drawArc(
+                                    color = SeverityMinor,
+                                    startAngle = -90f,
+                                    sweepAngle = availableSweep,
+                                    useCenter = false,
+                                    topLeft = topLeft,
+                                    size = arcSize,
+                                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                                )
+                                // Injured arc (red)
+                                drawArc(
+                                    color = SeveritySevere,
+                                    startAngle = -90f + availableSweep,
+                                    sweepAngle = 360f - availableSweep,
+                                    useCenter = false,
+                                    topLeft = topLeft,
+                                    size = arcSize,
+                                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("$availabilityPercent%", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+                                Text("Available", fontSize = 10.sp, color = TextSecondary)
+                            }
+                        }
+
+                        Spacer(Modifier.width(20.dp))
+
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            AvailabilityRow(SeverityMinor, "Available", availablePlayers, totalPlayers)
+                            AvailabilityRow(SeveritySevere, "Injured", injuredPlayerIds.size, totalPlayers)
+
+                            val needingPcme = players.count { it.profile?.pcmeStatus in listOf("missing", "late", "expected") }
+                            AvailabilityRow(SeverityModerate, "PCME Due", needingPcme, totalPlayers)
+                        }
+                    }
                 }
             }
+            Spacer(Modifier.height(12.dp))
         }
 
-        // Upcoming PCMEs
+        // ── Weekly Load Overview ──
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                SectionHeader("Players Needing PCME")
-                val needingPcme = players.filter {
-                    it.profile?.pcmeStatus in listOf("missing", "late", "expected")
-                }.take(3)
-                if (needingPcme.isEmpty()) {
-                    GolazoCard {
-                        Text("All players up to date", fontSize = 12.sp, color = TextSecondary)
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Surface(shape = CircleShape, color = Color(0xFFFF9800).copy(alpha = 0.12f), modifier = Modifier.size(32.dp)) {
+                            Icon(Icons.Default.BarChart, null, tint = Color(0xFFFF9800), modifier = Modifier.padding(6.dp))
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        Text("Weekly Load", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp)
                     }
-                } else {
-                    needingPcme.forEach { pw ->
-                        pw.profile?.let { p ->
-                            GolazoCard(modifier = Modifier.padding(vertical = 4.dp)) {
+                    Spacer(Modifier.height(16.dp))
+
+                    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+                    val loads = listOf(78, 92, 65, 88, 45, 95, 30)
+                    val maxLoad = 100
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(130.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        days.forEachIndexed { idx, day ->
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    "${loads[idx]}",
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = TextSecondary
+                                )
+                                Spacer(Modifier.height(4.dp))
+                                val barHeight = (loads[idx].toFloat() / maxLoad * 80).dp
+                                val barColor = when {
+                                    loads[idx] >= 90 -> SeveritySevere
+                                    loads[idx] >= 70 -> SeverityModerate
+                                    else -> SeverityMinor
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(barHeight)
+                                        .background(
+                                            barColor.copy(alpha = 0.8f),
+                                            RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
+                                        )
+                                )
+                                Spacer(Modifier.height(6.dp))
+                                Text(day, fontSize = 10.sp, color = TextSecondary)
+                            }
+                        }
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+                    HorizontalDivider(color = BackgroundGray)
+                    Spacer(Modifier.height(10.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        LoadLegendItem(SeverityMinor, "Low (<70)")
+                        LoadLegendItem(SeverityModerate, "Medium (70-89)")
+                        LoadLegendItem(SeveritySevere, "High (90+)")
+                    }
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ── Return to Play ──
+        item {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(shape = CircleShape, color = UefaBlue.copy(alpha = 0.12f), modifier = Modifier.size(32.dp)) {
+                                Icon(Icons.Default.DirectionsRun, null, tint = UefaBlue, modifier = Modifier.padding(6.dp))
+                            }
+                            Spacer(Modifier.width(10.dp))
+                            Text("Return to Play", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp)
+                        }
+                        Surface(shape = RoundedCornerShape(12.dp), color = UefaBlue.copy(alpha = 0.08f)) {
+                            Text(
+                                "${openInjuries.size} active",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = UefaBlue,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
+
+                    if (openInjuries.isEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = SeverityMinor.copy(alpha = 0.08f),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Default.CheckCircle, null, tint = SeverityMinor, modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.width(10.dp))
+                                Text("All players fully available", fontSize = 13.sp, color = SeverityMinor, fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                    } else {
+                        openInjuries.take(4).forEach { injury ->
+                            val player = players.find { it.user?.id == injury.userId }
+                            val playerName = player?.profile?.let { "${it.firstName} ${it.lastName}" } ?: "Unknown Player"
+                            val playerPos = player?.profile?.position ?: ""
+                            val sevColor = when (injury.severity) {
+                                "minor" -> SeverityMinor
+                                "moderate" -> SeverityModerate
+                                else -> SeveritySevere
+                            }
+                            val rtpLabel = when (injury.rtpStatus) {
+                                "cleared" -> "Cleared"
+                                "in_progress" -> "In Progress"
+                                "conditioning" -> "Conditioning"
+                                else -> "Not Started"
+                            }
+                            val rtpProgress = when (injury.rtpStatus) {
+                                "cleared" -> 1.0f
+                                "conditioning" -> 0.75f
+                                "in_progress" -> 0.5f
+                                else -> 0.15f
+                            }
+
+                            Surface(
+                                shape = RoundedCornerShape(14.dp),
+                                color = BackgroundGray.copy(alpha = 0.6f),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Column(modifier = Modifier.padding(14.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        InitialsAvatar(playerName, sevColor, 36)
+                                        Spacer(Modifier.width(12.dp))
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(playerName, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                                            Text("$playerPos • ${injury.bodyArea}", fontSize = 11.sp, color = TextSecondary)
+                                        }
+                                        Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
+                                            Text(
+                                                injury.severity.replaceFirstChar { it.uppercase() },
+                                                fontSize = 10.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = sevColor,
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                            )
+                                        }
+                                    }
+                                    Spacer(Modifier.height(10.dp))
+
+                                    // RTP Progress bar
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text("RTP:", fontSize = 10.sp, color = TextSecondary, fontWeight = FontWeight.SemiBold)
+                                        Spacer(Modifier.width(8.dp))
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            LinearProgressIndicator(
+                                                progress = { rtpProgress },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(6.dp),
+                                                color = when {
+                                                    rtpProgress >= 0.75f -> SeverityMinor
+                                                    rtpProgress >= 0.5f -> SeverityModerate
+                                                    else -> SeveritySevere
+                                                },
+                                                trackColor = BackgroundGray,
+                                                strokeCap = StrokeCap.Round
+                                            )
+                                        }
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(rtpLabel, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = TextSecondary)
+                                    }
+
+                                    if (injury.estimatedReturnDate != null) {
+                                        Spacer(Modifier.height(4.dp))
+                                        Text(
+                                            "Est. return: ${injury.estimatedReturnDate}",
+                                            fontSize = 10.sp,
+                                            color = UefaBlue,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ── Quick Actions ──
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                QuickAction("Players", Icons.Default.People, UefaBlue, onViewPlayers, Modifier.weight(1f))
+                QuickAction("PCME", Icons.Default.MedicalServices, SeverityMinor, onViewPcme, Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                QuickAction("Injuries", Icons.Default.LocalHospital, SeveritySevere, onViewInjuries, Modifier.weight(1f))
+                QuickAction("Training", Icons.Default.FitnessCenter, Color(0xFFFF9800), onViewTraining, Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ── Players Needing PCME ──
+        item {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = CardWhite,
+                shadowElevation = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Surface(shape = CircleShape, color = SeverityModerate.copy(alpha = 0.12f), modifier = Modifier.size(32.dp)) {
+                            Icon(Icons.Default.Assignment, null, tint = SeverityModerate, modifier = Modifier.padding(6.dp))
+                        }
+                        Spacer(Modifier.width(10.dp))
+                        Text("Players Needing PCME", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp)
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    val needingPcme = players.filter {
+                        it.profile?.pcmeStatus in listOf("missing", "late", "expected")
+                    }.take(4)
+                    if (needingPcme.isEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = SeverityMinor.copy(alpha = 0.08f),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Default.CheckCircle, null, tint = SeverityMinor, modifier = Modifier.size(20.dp))
+                                Spacer(Modifier.width(10.dp))
+                                Text("All players up to date", fontSize = 13.sp, color = SeverityMinor, fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                    } else {
+                        needingPcme.forEach { pw ->
+                            pw.profile?.let { p ->
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     InitialsAvatar("${p.firstName} ${p.lastName}", UefaBlue, 36)
                                     Spacer(Modifier.width(12.dp))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text("${p.firstName} ${p.lastName}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                        Text("${p.club} • ${p.position}", fontSize = 10.sp, color = TextSecondary)
+                                        Text("${p.firstName} ${p.lastName}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                                        Text("${p.club} • ${p.position}", fontSize = 11.sp, color = TextSecondary)
                                     }
                                     PcmeStatusBadge(p.pcmeStatus)
                                 }
@@ -164,33 +539,67 @@ fun DoctorHomeScreen(
     }
 }
 
+// ── Helper Composables ──
+
 @Composable
-private fun StatCard(label: String, value: String, icon: ImageVector, modifier: Modifier = Modifier) {
-    GolazoCard(modifier = modifier) {
-        Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(24.dp))
-        Spacer(Modifier.height(8.dp))
-        Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = UefaBlue)
-        Text(label, fontSize = 10.sp, color = TextSecondary)
+private fun HeroStat(label: String, value: String, icon: ImageVector) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Surface(shape = CircleShape, color = Color.White.copy(alpha = 0.15f), modifier = Modifier.size(36.dp)) {
+            Icon(icon, null, tint = Color.White, modifier = Modifier.padding(8.dp))
+        }
+        Spacer(Modifier.height(6.dp))
+        Text(value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        Text(label, fontSize = 10.sp, color = Color.White.copy(alpha = 0.7f))
     }
 }
 
 @Composable
-private fun QuickAction(label: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Card(
+private fun AvailabilityRow(color: Color, label: String, count: Int, total: Int) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .background(color, CircleShape)
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(label, fontSize = 12.sp, color = TextSecondary, modifier = Modifier.weight(1f))
+        Text("$count", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+    }
+}
+
+@Composable
+private fun LoadLegendItem(color: Color, label: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .background(color.copy(alpha = 0.8f), RoundedCornerShape(2.dp))
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(label, fontSize = 9.sp, color = TextSecondary)
+    }
+}
+
+@Composable
+private fun QuickAction(label: String, icon: ImageVector, color: Color, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = UefaBlueVeryLight)
+        color = color.copy(alpha = 0.08f)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(28.dp))
-            Spacer(Modifier.height(8.dp))
-            Text(label, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = UefaBlue)
+            Surface(shape = CircleShape, color = color.copy(alpha = 0.15f), modifier = Modifier.size(32.dp)) {
+                Icon(icon, null, tint = color, modifier = Modifier.padding(6.dp))
+            }
+            Spacer(Modifier.width(10.dp))
+            Text(label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = color)
         }
     }
 }

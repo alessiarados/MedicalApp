@@ -60,12 +60,18 @@ fun LoginScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Text("Golazo Medical", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = UefaBlue)
+        Text("UEFA Medical Analyst", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = UefaBlue)
         Text("UEFA Medical Platform", fontSize = 12.sp, color = TextSecondary)
 
         Spacer(Modifier.height(32.dp))
 
-        GolazoCard {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = CardWhite,
+            shadowElevation = 4.dp,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 if (state.isRegistration) "Create Account" else "Sign In",
                 fontSize = 16.sp,
@@ -149,6 +155,7 @@ fun LoginScreen(
                     .clickable { viewModel.toggleRegistration() }
                     .padding(8.dp)
             )
+        }
         }
     }
 }

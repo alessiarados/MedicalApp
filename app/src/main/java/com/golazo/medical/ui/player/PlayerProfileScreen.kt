@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -58,35 +59,44 @@ fun PlayerProfileScreen(
 
                 Spacer(Modifier.height(24.dp))
 
-                GolazoCard {
-                    SectionHeader("Personal Information")
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Personal Information", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(12.dp))
                     ProfileRow("First Name", p.firstName)
                     ProfileRow("Last Name", p.lastName)
                     ProfileRow("Nationality", p.nationality)
                     ProfileRow("Date of Birth", p.dob)
                     p.location?.let { ProfileRow("Location", it) }
+                    }
                 }
 
                 Spacer(Modifier.height(12.dp))
 
-                GolazoCard {
-                    SectionHeader("Football Details")
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Football Details", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(12.dp))
                     ProfileRow("Club", p.club)
                     ProfileRow("Position", p.position)
                     ProfileRow("Status", p.status.replaceFirstChar { it.uppercase() })
                     ProfileRow("PCME Status", p.pcmeStatus.replaceFirstChar { it.uppercase() })
+                    }
                 }
 
                 Spacer(Modifier.height(12.dp))
 
-                GolazoCard {
-                    SectionHeader("Account")
+                Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Account", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(12.dp))
                     val user = viewModel.sessionManager.currentUser.value
                     user?.let {
                         ProfileRow("Email", it.email)
                         ProfileRow("Role", it.role.replaceFirstChar { c -> c.uppercase() })
                         ProfileRow("Non-UEFA", if (it.nonUefa) "Yes" else "No")
                         it.phoneNumber?.let { ph -> ProfileRow("Phone", ph) }
+                    }
                     }
                 }
 

@@ -31,13 +31,13 @@ fun GolazoCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = White),
-        border = BorderStroke(1.dp, CardBorder),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        border = BorderStroke(0.5.dp, CardBorder),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(18.dp),
             content = content
         )
     }
@@ -50,14 +50,14 @@ fun GolazoTopBar(
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     Surface(
-        color = UefaBlue,
-        shadowElevation = 4.dp
+        color = UefaBlueDark,
+        shadowElevation = 6.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 8.dp, vertical = 8.dp),
+                .padding(horizontal = 6.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (onBack != null) {
@@ -65,13 +65,14 @@ fun GolazoTopBar(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = White)
                 }
             } else {
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(12.dp))
             }
             Text(
                 text = title,
                 color = White,
-                fontSize = 16.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.Bold,
+                letterSpacing = 0.3.sp,
                 modifier = Modifier.weight(1f)
             )
             actions()
@@ -102,11 +103,13 @@ fun GolazoTextField(
         maxLines = maxLines,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = UefaBlue,
             unfocusedBorderColor = CardBorder,
             focusedLabelColor = UefaBlue,
+            unfocusedContainerColor = CardWhite,
+            focusedContainerColor = White,
         ),
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
@@ -129,14 +132,15 @@ fun GolazoButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(50.dp),
         enabled = enabled && !isLoading,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor,
-            disabledContainerColor = containerColor.copy(alpha = 0.5f)
-        )
+            disabledContainerColor = containerColor.copy(alpha = 0.4f)
+        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp, pressedElevation = 1.dp)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -145,7 +149,7 @@ fun GolazoButton(
                 strokeWidth = 2.dp
             )
         } else {
-            Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+            Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.3.sp)
         }
     }
 }
@@ -161,13 +165,13 @@ fun GolazoOutlinedButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(50.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, UefaBlue),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.5.dp, UefaBlue),
         colors = ButtonDefaults.outlinedButtonColors(contentColor = UefaBlue)
     ) {
-        Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        Text(text, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.3.sp)
     }
 }
 
@@ -180,15 +184,16 @@ fun SeverityBadge(severity: String) {
         else -> TextSecondary to severity
     }
     Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = color.copy(alpha = 0.15f)
+        shape = RoundedCornerShape(20.dp),
+        color = color.copy(alpha = 0.12f)
     ) {
         Text(
             text = label,
             color = color,
             fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.3.sp,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
         )
     }
 }
@@ -197,15 +202,16 @@ fun SeverityBadge(severity: String) {
 fun StatusBadge(status: String, isOpen: Boolean = status.lowercase() == "open") {
     val color = if (isOpen) StatusOpen else StatusClosed
     Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = color.copy(alpha = 0.15f)
+        shape = RoundedCornerShape(20.dp),
+        color = color.copy(alpha = 0.12f)
     ) {
         Text(
             text = status.replaceFirstChar { it.uppercase() },
             color = color,
             fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.3.sp,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
         )
     }
 }
@@ -228,15 +234,16 @@ fun RtpBadge(rtpStatus: String) {
         else -> TextSecondary
     }
     Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = color.copy(alpha = 0.15f)
+        shape = RoundedCornerShape(20.dp),
+        color = color.copy(alpha = 0.12f)
     ) {
         Text(
             text = label,
             color = color,
             fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.3.sp,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
         )
     }
 }
@@ -251,15 +258,16 @@ fun PcmeStatusBadge(status: String) {
         else -> TextSecondary to status
     }
     Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = color.copy(alpha = 0.15f)
+        shape = RoundedCornerShape(20.dp),
+        color = color.copy(alpha = 0.12f)
     ) {
         Text(
             text = label,
             color = color,
             fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.3.sp,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp)
         )
     }
 }
@@ -268,9 +276,10 @@ fun PcmeStatusBadge(status: String) {
 fun SectionHeader(title: String, modifier: Modifier = Modifier) {
     Text(
         text = title,
-        fontSize = 14.sp,
+        fontSize = 15.sp,
         fontWeight = FontWeight.Bold,
         color = TextPrimary,
+        letterSpacing = 0.2.sp,
         modifier = modifier.padding(vertical = 8.dp)
     )
 }
@@ -285,19 +294,27 @@ fun EmptyState(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(32.dp),
+            .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            icon, null,
-            modifier = Modifier.size(48.dp),
-            tint = TextSecondary.copy(alpha = 0.5f)
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(title, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = TextSecondary)
+        Surface(
+            shape = CircleShape,
+            color = UefaBlueVeryLight,
+            modifier = Modifier.size(72.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    icon, null,
+                    modifier = Modifier.size(36.dp),
+                    tint = UefaBlue.copy(alpha = 0.5f)
+                )
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = TextPrimary)
         if (subtitle.isNotEmpty()) {
-            Spacer(Modifier.height(4.dp))
-            Text(subtitle, fontSize = 12.sp, color = TextSecondary.copy(alpha = 0.7f), textAlign = TextAlign.Center)
+            Spacer(Modifier.height(6.dp))
+            Text(subtitle, fontSize = 13.sp, color = TextSecondary, textAlign = TextAlign.Center)
         }
     }
 }
@@ -331,18 +348,20 @@ fun InitialsAvatar(
     size: Int = 40
 ) {
     val initials = name.split(" ").take(2).map { it.firstOrNull()?.uppercase() ?: "" }.joinToString("")
-    Box(
-        modifier = Modifier
-            .size(size.dp)
-            .clip(CircleShape)
-            .background(color.copy(alpha = 0.15f)),
-        contentAlignment = Alignment.Center
+    Surface(
+        modifier = Modifier.size(size.dp),
+        shape = CircleShape,
+        color = color.copy(alpha = 0.12f),
+        shadowElevation = 2.dp
     ) {
-        Text(
-            text = initials,
-            color = color,
-            fontSize = (size / 3).sp,
-            fontWeight = FontWeight.Bold
-        )
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = initials,
+                color = color,
+                fontSize = (size / 3).sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+        }
     }
 }
