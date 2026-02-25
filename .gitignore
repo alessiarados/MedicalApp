@@ -9,3 +9,9 @@
 .cxx
 local.properties
 /app/build
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/migrations/
+backend/dist/
