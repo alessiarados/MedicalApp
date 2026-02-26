@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.golazo.medical.R
 import com.golazo.medical.data.model.InjuryCase
 import com.golazo.medical.ui.components.*
+import com.golazo.medical.ui.components.rememberSpeechRecognizer
 import com.golazo.medical.ui.theme.*
 
 @Composable
@@ -29,8 +31,18 @@ fun InjuryCreateScreen(
     onCreated: () -> Unit,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
+    val profile by viewModel.profile.collectAsStateWithLifecycle()
+    val isFemale = profile?.gender == "female"
+    
+    LaunchedEffect(Unit) { viewModel.loadProfile() }
+    
     var selectedBodyAreas by remember { mutableStateOf(setOf<String>()) }
     var mechanism by remember { mutableStateOf("") }
+    
+    val speechRecognizer = rememberSpeechRecognizer(
+        onResult = { text -> mechanism = if (mechanism.isEmpty()) text else "$mechanism $text" },
+        onError = { }
+    )
     var severity by remember { mutableStateOf("minor") }
     var injuryCategory by remember { mutableStateOf("") }
     var injuryType by remember { mutableStateOf("") }
@@ -182,7 +194,8 @@ fun InjuryCreateScreen(
                             isFrontView = bodyViewFront,
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
-                                .height(300.dp)
+                                .height(300.dp),
+                            isFemale = isFemale
                         )
                     }
 
@@ -203,8 +216,18 @@ fun InjuryCreateScreen(
                     singleLine = false,
                     maxLines = 4,
                     trailingIcon = {
-                        IconButton(onClick = { /* Voice input placeholder */ }) {
-                            Icon(Icons.Default.Mic, "Voice input", tint = UefaBlue)
+                        IconButton(onClick = { 
+                            if (speechRecognizer.isListening) {
+                                speechRecognizer.stopListening()
+                            } else {
+                                speechRecognizer.startListening()
+                            }
+                        }) {
+                            Icon(
+                                Icons.Default.Mic, 
+                                "Voice input", 
+                                tint = if (speechRecognizer.isListening) SeveritySevere else UefaBlue
+                            )
                         }
                     }
                 )

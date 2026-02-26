@@ -1,7 +1,12 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Convert camelCase keys to snake_case recursively
 function toSnakeCase(str: string): string {
@@ -39,6 +44,9 @@ app.use(cors());
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: false }));
 
+// Serve static files from uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
+
 app.use((req, _res, next) => {
   if (req.body && typeof req.body === "object") {
     req.body = convertKeysToCamelCase(req.body);
@@ -72,6 +80,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("📋 Demo accounts:");
   console.log("   Player: player@uefa.com / password123");
   console.log("   Player: marco@uefa.com  / password123");
+  console.log("   Player: sofia@uefa.com  / password123");
   console.log("   Doctor: doctor@uefa.com / password123");
   console.log("   PIN for all: 1234\n");
 });

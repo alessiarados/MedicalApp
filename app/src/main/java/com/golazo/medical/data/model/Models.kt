@@ -27,6 +27,7 @@ data class PlayerProfile(
     val club: String = "",
     val dob: String = "",
     val position: String = "",
+    val gender: String = "male",
     @SerialName("image_url") val imageUrl: String? = null,
     val location: String? = null,
     val status: String = "active",

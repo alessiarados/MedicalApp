@@ -30,6 +30,7 @@ export const playerProfiles = pgTable("player_profiles", {
   club: text("club").notNull(),
   dob: text("dob").notNull(),
   position: text("position").notNull(),
+  gender: text("gender", { enum: ["male", "female"] }).default("male").notNull(),
   imageUrl: text("image_url"),
   location: text("location"),
   status: text("status", { enum: ["active", "inactive", "pending_consent"] }).default("active").notNull(),

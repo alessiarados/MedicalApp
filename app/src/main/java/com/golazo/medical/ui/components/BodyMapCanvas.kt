@@ -19,16 +19,21 @@ import com.golazo.medical.ui.theme.UefaBlue
 fun BodyMapWithHighlights(
     selectedAreas: Set<String>,
     isFrontView: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isFemale: Boolean = false
 ) {
     val highlightColor = Color(0xFF90CAF9).copy(alpha = 0.4f) // Light blue highlight
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        // Base body image
+        // Base body image - use female or male version
+        val imageRes = when {
+            isFemale && isFrontView -> R.drawable.body_front_female
+            isFemale && !isFrontView -> R.drawable.body_back_female
+            isFrontView -> R.drawable.body_front
+            else -> R.drawable.body_back
+        }
         Image(
-            painter = painterResource(
-                id = if (isFrontView) R.drawable.body_front else R.drawable.body_back
-            ),
+            painter = painterResource(id = imageRes),
             contentDescription = if (isFrontView) "Body front view" else "Body back view",
             modifier = Modifier.fillMaxSize()
         )

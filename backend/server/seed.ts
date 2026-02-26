@@ -246,6 +246,7 @@ async function seed() {
       location: "Milan, Italy",
       status: "active",
       pcmeStatus: "expected",
+      imageUrl: "/uploads/rossi-card.png",
     },
   ]);
   console.log("✅ Player profiles seeded (8)");

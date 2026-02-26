@@ -21,11 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.golazo.medical.data.SimulatedData
 import com.golazo.medical.ui.components.*
@@ -34,13 +38,18 @@ import com.golazo.medical.ui.theme.*
 @Composable
 fun PlayerHomeScreen(
     onSignOut: () -> Unit = {},
+    onNavigateToInjuries: () -> Unit = {},
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val profile by viewModel.profile.collectAsStateWithLifecycle()
+    val injuries by viewModel.injuries.collectAsStateWithLifecycle()
     var showProfileMenu by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) { viewModel.loadProfile() }
+    LaunchedEffect(Unit) { 
+        viewModel.loadProfile()
+        viewModel.loadInjuries()
+    }
 
     val firstName = profile?.firstName ?: "Alex"
     val lastName = profile?.lastName ?: "Thompson"
@@ -96,16 +105,26 @@ fun PlayerHomeScreen(
                     // Avatar top-right (clickable for profile menu)
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
+                            .width(120.dp)
+                            .height(160.dp)
                             .align(Alignment.TopEnd)
                             .clickable { showProfileMenu = true }
                     ) {
-                        ProfileAvatar(
-                            imageUrl = imageUrl,
-                            name = "$firstName $lastName",
-                            size = 44,
-                            fallbackColor = White
-                        )
+                        if (!imageUrl.isNullOrBlank()) {
+                            val fullUrl = if (imageUrl.startsWith("http")) imageUrl
+                                else "http://10.0.2.2:3000$imageUrl"
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(fullUrl)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "$firstName $lastName",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+                        }
                     }
                     // Player info
                     Column(modifier = Modifier.padding(top = 40.dp)) {
@@ -215,11 +234,19 @@ fun PlayerHomeScreen(
 
                 // Injuries Card
                 Surface(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onNavigateToInjuries() },
                     shape = RoundedCornerShape(20.dp),
                     color = CardWhite,
                     shadowElevation = 4.dp
                 ) {
+                    val activeInjuries = injuries.count { it.status == "active" }
+                    val totalInjuries = injuries.size
+                    val minorCount = injuries.count { it.severity == "minor" }
+                    val moderateCount = injuries.count { it.severity == "moderate" }
+                    val severeCount = injuries.count { it.severity == "severe" }
+                    
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -235,7 +262,7 @@ fun PlayerHomeScreen(
                         }
                         Spacer(Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.Bottom) {
-                            Text("2", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+                            Text("$activeInjuries", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
                             Spacer(Modifier.width(6.dp))
                             Text("active", fontSize = 13.sp, color = TextSecondary, modifier = Modifier.padding(bottom = 6.dp))
                         }
@@ -246,38 +273,54 @@ fun PlayerHomeScreen(
                         ) {
                             Column {
                                 Text("Total", fontSize = 10.sp, color = TextSecondary)
-                                Text("7 injuries", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("$totalInjuries injuries", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                             Column {
-                                Text("Days Out", fontSize = 10.sp, color = TextSecondary)
-                                Text("208 days", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("Severe", fontSize = 10.sp, color = TextSecondary)
+                                Text("$severeCount", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
                         Spacer(Modifier.height(12.dp))
-                        // Severity bar
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(6.dp)
-                                .clip(RoundedCornerShape(3.dp))
-                        ) {
+                        // Severity bar - dynamic based on actual injuries
+                        if (totalInjuries > 0) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                            ) {
+                                if (minorCount > 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(minorCount.toFloat())
+                                            .fillMaxHeight()
+                                            .background(SeverityMinor)
+                                    )
+                                }
+                                if (moderateCount > 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(moderateCount.toFloat())
+                                            .fillMaxHeight()
+                                            .background(SeverityModerate)
+                                    )
+                                }
+                                if (severeCount > 0) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(severeCount.toFloat())
+                                            .fillMaxHeight()
+                                            .background(SeveritySevere)
+                                    )
+                                }
+                            }
+                        } else {
                             Box(
                                 modifier = Modifier
-                                    .weight(3f)
-                                    .fillMaxHeight()
-                                    .background(SeverityMinor)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .weight(2f)
-                                    .fillMaxHeight()
-                                    .background(SeverityModerate)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .weight(2f)
-                                    .fillMaxHeight()
-                                    .background(SeveritySevere)
+                                    .fillMaxWidth()
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(BackgroundGray)
                             )
                         }
                     }

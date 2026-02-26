@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.golazo.medical.data.model.InjuryCase
 import com.golazo.medical.ui.components.*
+import com.golazo.medical.ui.components.rememberSpeechRecognizer
 import com.golazo.medical.ui.theme.*
 
 @Composable
@@ -33,6 +34,11 @@ fun DoctorInjuryCreateScreen(
     var selectedPlayerId by remember { mutableStateOf("") }
     var bodyArea by remember { mutableStateOf("") }
     var mechanism by remember { mutableStateOf("") }
+    
+    val speechRecognizer = rememberSpeechRecognizer(
+        onResult = { text -> mechanism = if (mechanism.isEmpty()) text else "$mechanism $text" },
+        onError = { }
+    )
     var severity by remember { mutableStateOf("minor") }
     var injuryCategory by remember { mutableStateOf("") }
     var injuryType by remember { mutableStateOf("") }
@@ -137,8 +143,18 @@ fun DoctorInjuryCreateScreen(
                     singleLine = false,
                     maxLines = 4,
                     trailingIcon = {
-                        IconButton(onClick = {}) {
-                            Icon(Icons.Default.Mic, "Voice", tint = UefaBlue)
+                        IconButton(onClick = { 
+                            if (speechRecognizer.isListening) {
+                                speechRecognizer.stopListening()
+                            } else {
+                                speechRecognizer.startListening()
+                            }
+                        }) {
+                            Icon(
+                                Icons.Default.Mic, 
+                                "Voice", 
+                                tint = if (speechRecognizer.isListening) SeveritySevere else UefaBlue
+                            )
                         }
                     }
                 )

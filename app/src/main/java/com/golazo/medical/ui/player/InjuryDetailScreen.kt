@@ -31,13 +31,18 @@ fun InjuryDetailScreen(
     val injury by viewModel.currentInjury.collectAsStateWithLifecycle()
     val notes by viewModel.injuryNotes.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val profile by viewModel.profile.collectAsStateWithLifecycle()
+    val isFemale = profile?.gender == "female"
 
     var showAddNote by remember { mutableStateOf(false) }
     var noteIntensity by remember { mutableIntStateOf(5) }
     var noteSoap by remember { mutableStateOf("") }
     var noteRtp by remember { mutableStateOf("") }
 
-    LaunchedEffect(injuryId) { viewModel.loadInjuryDetail(injuryId) }
+    LaunchedEffect(injuryId) { 
+        viewModel.loadInjuryDetail(injuryId)
+        viewModel.loadProfile()
+    }
 
     Column(
         modifier = Modifier
@@ -154,7 +159,8 @@ fun InjuryDetailScreen(
                                         isFrontView = true,
                                         modifier = Modifier
                                             .fillMaxWidth(0.6f)
-                                            .height(260.dp)
+                                            .height(260.dp),
+                                        isFemale = isFemale
                                     )
                                 }
                                 

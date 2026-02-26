@@ -257,6 +257,20 @@ export function registerRoutes(app: Express): void {
     }
   });
 
+  app.patch("/api/profile/:userId", async (req: Request, res: Response) => {
+    try {
+      const userId = String(req.params.userId);
+      const profile = await storage.getPlayerProfile(userId);
+      if (!profile) {
+        return res.status(404).json({ error: "Profile not found" });
+      }
+      const updated = await storage.updatePlayerProfile(profile.id, req.body);
+      res.json({ profile: updated });
+    } catch (error) {
+      res.status(400).json({ error: "Failed to update profile" });
+    }
+  });
+
   // ─── Consent Grants ───
   app.get("/api/consent/:userId", async (req: Request, res: Response) => {
     try {

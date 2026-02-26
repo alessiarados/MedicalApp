@@ -246,6 +246,9 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                         navController.navigate(Routes.LOGIN) {
                             popUpTo(0) { inclusive = true }
                         }
+                    },
+                    onNavigateToInjuries = {
+                        navController.navigate(Routes.PLAYER_INJURIES)
                     }
                 )
             }
