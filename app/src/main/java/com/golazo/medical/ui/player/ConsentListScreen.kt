@@ -3,13 +3,16 @@ package com.golazo.medical.ui.player
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +30,26 @@ fun ConsentListScreen(
 ) {
     val consents by viewModel.consents.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+
+    var selectedFilterIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    val filteredConsents = remember(consents, selectedFilterIndex) {
+        when (selectedFilterIndex) {
+            1 -> consents.filter {
+                val type = it.granteeType.lowercase()
+                type.contains("doctor")
+            }
+            2 -> consents.filter {
+                val type = it.granteeType.lowercase()
+                type.contains("parent")
+            }
+            3 -> consents.filter {
+                val type = it.granteeType.lowercase()
+                !(type.contains("doctor") || type.contains("parent"))
+            }
+            else -> consents
+        }
+    }
 
     LaunchedEffect(Unit) { viewModel.loadConsents() }
 
@@ -59,6 +82,30 @@ fun ConsentListScreen(
                 Spacer(Modifier.height(16.dp))
             }
 
+            item {
+                val labels = listOf("All", "Team Doctor", "Parent", "External")
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 2.dp)
+                ) {
+                    itemsIndexed(labels) { index, label ->
+                        FilterChip(
+                            selected = selectedFilterIndex == index,
+                            onClick = { selectedFilterIndex = index },
+                            label = { Text(label, fontSize = 12.sp) },
+                            leadingIcon =
+                                if (selectedFilterIndex == index) {
+                                    { Icon(Icons.Default.Check, contentDescription = null) }
+                                } else {
+                                    null
+                                }
+                        )
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+
             // Summary card
             item {
                 Surface(
@@ -76,7 +123,7 @@ fun ConsentListScreen(
                         }
                         Spacer(Modifier.width(16.dp))
                         Column {
-                            Text("${consents.size} Active Grant${if (consents.size != 1) "s" else ""}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = White)
+                            Text("${filteredConsents.size} Active Grant${if (filteredConsents.size != 1) "s" else ""}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = White)
                             Text("Your data sharing permissions", fontSize = 12.sp, color = White.copy(alpha = 0.7f))
                         }
                     }
@@ -86,7 +133,7 @@ fun ConsentListScreen(
 
             if (isLoading) {
                 item { LoadingScreen() }
-            } else if (consents.isEmpty()) {
+            } else if (filteredConsents.isEmpty()) {
                 item {
                     EmptyState(
                         icon = Icons.Default.Security,
@@ -95,7 +142,7 @@ fun ConsentListScreen(
                     )
                 }
             } else {
-                items(consents) { grant ->
+                items(filteredConsents) { grant ->
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(20.dp),

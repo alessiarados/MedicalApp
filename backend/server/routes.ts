@@ -404,10 +404,18 @@ export function registerRoutes(app: Express): void {
 
   app.post("/api/injuries", async (req: Request, res: Response) => {
     try {
-      const data = insertInjuryCaseSchema.parse(req.body);
+      // Apply defaults for required fields if not provided
+      const body = {
+        ...req.body,
+        severity: req.body.severity || "minor",
+        status: req.body.status || "open",
+        createdBy: req.body.createdBy || "player",
+      };
+      const data = insertInjuryCaseSchema.parse(body);
       const injury = await storage.createInjuryCase(data);
       res.json({ injury });
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Injury create error:", error?.issues || error?.message || error);
       res.status(400).json({ error: "Invalid injury case data" });
     }
   });

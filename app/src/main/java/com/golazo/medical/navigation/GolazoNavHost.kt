@@ -262,7 +262,7 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                 InjuryCreateScreen(
                     onBack = { navController.popBackStack() },
                     onCreated = {
-                        navController.popBackStack()
+                        navController.popBackStack(Routes.PLAYER_INJURIES, inclusive = false)
                     }
                 )
             }
@@ -280,7 +280,8 @@ private fun GolazoNavHostContent(navController: NavHostController) {
 
             composable(Routes.PLAYER_INJURY_HISTORY) {
                 InjuryHistoryScreen(
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onInjuryClick = { navController.navigate(Routes.playerInjuryDetail(it)) }
                 )
             }
 
@@ -425,7 +426,7 @@ private fun GolazoNavHostContent(navController: NavHostController) {
             composable(Routes.DOCTOR_INJURY_CREATE) {
                 DoctorInjuryCreateScreen(
                     onBack = { navController.popBackStack() },
-                    onCreated = { navController.popBackStack() }
+                    onCreated = { navController.popBackStack(Routes.DOCTOR_INJURIES, inclusive = false) }
                 )
             }
 

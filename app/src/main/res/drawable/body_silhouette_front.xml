@@ -1,0 +1,203 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="140dp"
+    android:height="320dp"
+    android:viewportWidth="140"
+    android:viewportHeight="320">
+
+    <!-- Head outline -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M70,8 C80,8 88,18 88,32 C88,46 80,56 70,56 C60,56 52,46 52,32 C52,18 60,8 70,8 Z" />
+
+    <!-- Hair/top of head -->
+    <path
+        android:fillColor="#E8E8E8"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.4"
+        android:pathData="M70,8 C78,8 85,12 87,20 L53,20 C55,12 62,8 70,8 Z" />
+
+    <!-- Face features -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#D0D0D0"
+        android:strokeWidth="0.3"
+        android:pathData="M62,28 L62,34 M78,28 L78,34 M65,42 Q70,46 75,42" />
+
+    <!-- Neck -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M62,54 L62,68 L78,68 L78,54" />
+
+    <!-- Trapezius/Shoulders -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M62,68 Q50,70 35,74 L25,80 L25,88 L35,84 L42,78 L42,100 L98,100 L98,78 L105,84 L115,88 L115,80 L105,74 Q90,70 78,68" />
+
+    <!-- Chest/Torso upper -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M42,100 L42,145 L98,145 L98,100" />
+
+    <!-- Pectoral muscle outlines -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#D8D8D8"
+        android:strokeWidth="0.4"
+        android:pathData="M48,102 Q58,112 70,108 Q82,112 92,102" />
+
+    <!-- Chest center line -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#E0E0E0"
+        android:strokeWidth="0.3"
+        android:pathData="M70,100 L70,145" />
+
+    <!-- Abs muscle definition -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#E0E0E0"
+        android:strokeWidth="0.3"
+        android:pathData="M55,118 L85,118 M55,130 L85,130 M55,140 L85,140" />
+
+    <!-- Rib cage hints -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#E8E8E8"
+        android:strokeWidth="0.3"
+        android:pathData="M48,108 Q55,115 55,118 M92,108 Q85,115 85,118" />
+
+    <!-- Hip/Groin area - light blue underwear -->
+    <path
+        android:fillColor="#D0E8F5"
+        android:strokeColor="#B0D0E8"
+        android:strokeWidth="0.6"
+        android:pathData="M42,145 L45,168 L55,175 L70,180 L85,175 L95,168 L98,145 Z" />
+
+    <!-- Left Upper Arm -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M25,88 L20,95 L16,115 L18,118 L24,105 L30,90 L35,84" />
+
+    <!-- Right Upper Arm -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M115,88 L120,95 L124,115 L122,118 L116,105 L110,90 L105,84" />
+
+    <!-- Left Forearm -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M16,115 L12,145 L14,148 L20,148 L22,145 L18,118" />
+
+    <!-- Right Forearm -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M124,115 L128,145 L126,148 L120,148 L118,145 L122,118" />
+
+    <!-- Left Hand -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M12,145 L8,162 L10,168 L22,168 L24,162 L20,148" />
+
+    <!-- Right Hand -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M128,145 L132,162 L130,168 L118,168 L116,162 L120,148" />
+
+    <!-- Left Thigh -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M45,168 L40,215 L44,225 L62,225 L66,215 L55,175" />
+
+    <!-- Right Thigh -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M95,168 L100,215 L96,225 L78,225 L74,215 L85,175" />
+
+    <!-- Thigh muscle lines -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#E0E0E0"
+        android:strokeWidth="0.3"
+        android:pathData="M50,185 L50,210 M58,185 L58,210 M82,185 L82,210 M90,185 L90,210" />
+
+    <!-- Left Knee -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M44,225 L42,238 L44,245 L62,245 L64,238 L62,225" />
+
+    <!-- Right Knee -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M96,225 L98,238 L96,245 L78,245 L76,238 L78,225" />
+
+    <!-- Knee cap details -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#D8D8D8"
+        android:strokeWidth="0.3"
+        android:pathData="M50,232 Q53,238 50,244 M90,232 Q87,238 90,244" />
+
+    <!-- Left Lower Leg -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M44,245 L42,290 L46,298 L60,298 L64,290 L62,245" />
+
+    <!-- Right Lower Leg -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M96,245 L98,290 L94,298 L80,298 L76,290 L78,245" />
+
+    <!-- Shin/calf muscle lines -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#E0E0E0"
+        android:strokeWidth="0.3"
+        android:pathData="M50,255 L48,285 M56,255 L58,285 M84,255 L82,285 M90,255 L92,285" />
+
+    <!-- Left Foot -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M46,298 L40,308 L40,315 L62,315 L62,305 L60,298" />
+
+    <!-- Right Foot -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:strokeColor="#C0C0C0"
+        android:strokeWidth="0.6"
+        android:pathData="M94,298 L100,308 L100,315 L78,315 L78,305 L80,298" />
+
+</vector>

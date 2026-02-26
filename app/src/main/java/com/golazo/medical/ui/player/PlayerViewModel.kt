@@ -83,6 +83,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             repository.createInjury(injury.copy(userId = sessionManager.userId)).onSuccess {
+                loadInjuries()
                 onSuccess()
             }.onFailure {
                 _error.value = it.message

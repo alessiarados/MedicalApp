@@ -1,6 +1,7 @@
 package com.golazo.medical.ui.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +24,7 @@ import com.golazo.medical.ui.theme.*
 @Composable
 fun InjuryHistoryScreen(
     onBack: () -> Unit,
+    onInjuryClick: (String) -> Unit,
     viewModel: PlayerViewModel = hiltViewModel()
 ) {
     val injuries by viewModel.injuries.collectAsStateWithLifecycle()
@@ -54,7 +56,9 @@ fun InjuryHistoryScreen(
                         else -> SeveritySevere
                     }
                     Surface(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onInjuryClick(injury.id) },
                         shape = RoundedCornerShape(20.dp),
                         color = CardWhite,
                         shadowElevation = 4.dp
@@ -69,7 +73,7 @@ fun InjuryHistoryScreen(
                                 Text(injury.mechanism, fontSize = 11.sp, color = TextSecondary, maxLines = 1)
                                 Spacer(Modifier.height(6.dp))
                                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp) {
+                                    Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
                                         Text(
                                             injury.severity.replaceFirstChar { it.uppercase() },
                                             fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = sevColor,
@@ -82,6 +86,7 @@ fun InjuryHistoryScreen(
                                     )
                                 }
                             }
+                            Icon(Icons.Default.ChevronRight, null, tint = TextSecondary)
                         }
                     }
                 }
