@@ -168,12 +168,13 @@ fun PlayerHomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Recovery Card
                 Surface(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
@@ -236,12 +237,13 @@ fun PlayerHomeScreen(
                 Surface(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .clickable { onNavigateToInjuries() },
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
-                    val activeInjuries = injuries.count { it.status == "active" }
+                    val activeInjuries = injuries.count { it.status == "open" }
                     val totalInjuries = injuries.size
                     val minorCount = injuries.count { it.severity == "minor" }
                     val moderateCount = injuries.count { it.severity == "moderate" }
