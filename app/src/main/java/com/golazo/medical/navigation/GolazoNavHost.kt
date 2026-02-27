@@ -89,7 +89,7 @@ private fun GolazoNavHostContent(navController: NavHostController) {
         bottomBar = {
             if (showBottomNav) {
                 NavigationBar(
-                    containerColor = CardWhite,
+                    containerColor = MaterialTheme.colorScheme.surface,
                     tonalElevation = 12.dp
                 ) {
                     val homeRoute = navItems.first().route
@@ -123,11 +123,11 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                                 )
                             },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = UefaBlue,
-                                selectedTextColor = UefaBlue,
-                                unselectedIconColor = TextSecondary,
-                                unselectedTextColor = TextSecondary,
-                                indicatorColor = UefaBlueVeryLight
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                indicatorColor = MaterialTheme.colorScheme.primaryContainer
                             )
                         )
                     }
@@ -387,7 +387,9 @@ private fun GolazoNavHostContent(navController: NavHostController) {
                     onViewPlayers = { navController.navigate(Routes.DOCTOR_PLAYERS) },
                     onViewInjuries = { navController.navigate(Routes.DOCTOR_INJURIES) },
                     onViewPcme = { navController.navigate(Routes.DOCTOR_PCME) },
-                    onViewTraining = { navController.navigate(Routes.DOCTOR_TRAINING) }
+                    onViewTraining = { navController.navigate(Routes.DOCTOR_TRAINING) },
+                    onNavigateToInjury = { injuryId -> navController.navigate(Routes.doctorInjuryDetail(injuryId)) },
+                    onNavigateToPcme = { pcmeId -> navController.navigate(Routes.doctorPcmeDetail(pcmeId)) }
                 )
             }
 
@@ -411,7 +413,8 @@ private fun GolazoNavHostContent(navController: NavHostController) {
             composable(Routes.DOCTOR_INJURIES) {
                 DoctorInjuriesScreen(
                     onInjuryClick = { navController.navigate(Routes.doctorInjuryDetail(it)) },
-                    onCreateInjury = { navController.navigate(Routes.DOCTOR_INJURY_CREATE) }
+                    onCreateInjury = { navController.navigate(Routes.DOCTOR_INJURY_CREATE) },
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -436,7 +439,8 @@ private fun GolazoNavHostContent(navController: NavHostController) {
             composable(Routes.DOCTOR_PCME) {
                 DoctorPcmeListScreen(
                     onEntryClick = { navController.navigate(Routes.doctorPcmeDetail(it)) },
-                    onCreatePcme = { navController.navigate(Routes.doctorPcmeForm(it)) }
+                    onCreatePcme = { navController.navigate(Routes.doctorPcmeForm(it)) },
+                    onBack = { navController.popBackStack() }
                 )
             }
 

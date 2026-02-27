@@ -37,7 +37,7 @@ fun DoctorPlayerDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         GolazoTopBar(title = "Player Detail", onBack = onBack)
 
@@ -87,16 +87,16 @@ fun DoctorPlayerDetailScreen(
 
                     // Injuries
                     item {
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Default.LocalHospital, null, tint = SeveritySevere, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(8.dp))
-                                    Text("Injuries (${d.injuries.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                                    Text("Injuries (${d.injuries.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 if (d.injuries.isEmpty()) {
-                                    Text("No injuries recorded", fontSize = 12.sp, color = TextSecondary)
+                                    Text("No injuries recorded", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 } else {
                                     d.injuries.take(5).forEach { injury ->
                                         val sevColor = when (injury.severity) { "minor" -> SeverityMinor; "moderate" -> SeverityModerate; else -> SeveritySevere }
@@ -106,8 +106,8 @@ fun DoctorPlayerDetailScreen(
                                             }
                                             Spacer(Modifier.width(10.dp))
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text(injury.bodyArea, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                                                Text(injury.mechanism, fontSize = 10.sp, color = TextSecondary, maxLines = 1)
+                                                Text(injury.bodyArea, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                                                Text(injury.mechanism, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
                                             }
                                             Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
                                                 Text(injury.severity.replaceFirstChar { it.uppercase() }, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = sevColor, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
@@ -121,16 +121,16 @@ fun DoctorPlayerDetailScreen(
 
                     // PCME History
                     item {
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Default.MedicalServices, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(8.dp))
-                                    Text("PCME History (${d.pcmeEntries.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                                    Text("PCME History (${d.pcmeEntries.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 if (d.pcmeEntries.isEmpty()) {
-                                    Text("No PCME records", fontSize = 12.sp, color = TextSecondary)
+                                    Text("No PCME records", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 } else {
                                     d.pcmeEntries.take(3).forEach { entry ->
                                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -139,8 +139,8 @@ fun DoctorPlayerDetailScreen(
                                             }
                                             Spacer(Modifier.width(10.dp))
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text("PCME Record", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                                                Text(entry.recordedAt.take(10), fontSize = 10.sp, color = TextSecondary)
+                                                Text("PCME Record", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                                                Text(entry.recordedAt.take(10), fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                             Text("Blood: ${entry.bloodType}", fontSize = 11.sp, color = UefaBlue, fontWeight = FontWeight.Medium)
                                         }
@@ -152,16 +152,16 @@ fun DoctorPlayerDetailScreen(
 
                     // Training Sessions
                     item {
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Icon(Icons.Default.FitnessCenter, null, tint = SeverityModerate, modifier = Modifier.size(18.dp))
                                     Spacer(Modifier.width(8.dp))
-                                    Text("Training (${d.trainingSessions.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                                    Text("Training (${d.trainingSessions.size})", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 if (d.trainingSessions.isEmpty()) {
-                                    Text("No training sessions", fontSize = 12.sp, color = TextSecondary)
+                                    Text("No training sessions", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 } else {
                                     d.trainingSessions.take(3).forEach { session ->
                                         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -170,8 +170,8 @@ fun DoctorPlayerDetailScreen(
                                             }
                                             Spacer(Modifier.width(10.dp))
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text(session.title, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                                                Text("${session.date} • ${session.timeOfDay}", fontSize = 10.sp, color = TextSecondary)
+                                                Text(session.title, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
+                                                Text("${session.date} • ${session.timeOfDay}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                             }
                                             Surface(shape = RoundedCornerShape(8.dp), color = UefaBlueVeryLight) {
                                                 Text("${session.duration} min", fontSize = 10.sp, fontWeight = FontWeight.Medium, color = UefaBlue, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))

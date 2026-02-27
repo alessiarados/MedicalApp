@@ -381,12 +381,25 @@ export function registerRoutes(app: Express): void {
       const entry = await storage.createPcmeEntry(data);
 
       const profile = await storage.getPlayerProfile(data.userId);
+      const playerName = profile ? `${profile.firstName} ${profile.lastName}` : "Unknown Player";
+      
       if (profile) {
         await storage.updatePlayerProfile(profile.id, {
           pcmeStatus: "entered" as any,
           pcmeExpectedDate: null as any,
         });
       }
+
+      // Create notification for new PCME
+      await storage.createNotification({
+        type: "pcme_created",
+        title: "PCME Completed",
+        message: `${playerName} completed their PCME record`,
+        playerId: data.userId,
+        playerName: playerName,
+        relatedId: entry.id,
+        isRead: false,
+      });
 
       res.json({ entry });
     } catch (error) {
@@ -427,6 +440,20 @@ export function registerRoutes(app: Express): void {
       };
       const data = insertInjuryCaseSchema.parse(body);
       const injury = await storage.createInjuryCase(data);
+      
+      // Create notification for new injury
+      const profile = await storage.getPlayerProfile(data.userId);
+      const playerName = profile ? `${profile.firstName} ${profile.lastName}` : "Unknown Player";
+      await storage.createNotification({
+        type: "injury_created",
+        title: "New Injury Reported",
+        message: `${playerName} reported a new ${data.bodyArea} injury`,
+        playerId: data.userId,
+        playerName: playerName,
+        relatedId: injury.id,
+        isRead: false,
+      });
+      
       res.json({ injury });
     } catch (error: any) {
       console.error("Injury create error:", error?.issues || error?.message || error);
@@ -674,5 +701,44 @@ export function registerRoutes(app: Express): void {
       graphActions: [],
       conversationHistory: [],
     });
+  });
+
+  // ─── Notifications ───
+  app.get("/api/notifications", async (_req: Request, res: Response) => {
+    try {
+      const notifications = await storage.listNotifications();
+      res.json({ notifications });
+    } catch (error) {
+      console.error("List notifications error:", error);
+      res.status(500).json({ error: "Failed to fetch notifications" });
+    }
+  });
+
+  app.get("/api/notifications/unread-count", async (_req: Request, res: Response) => {
+    try {
+      const count = await storage.getUnreadNotificationCount();
+      res.json({ count });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch unread count" });
+    }
+  });
+
+  app.post("/api/notifications/:id/read", async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id as string;
+      await storage.markNotificationAsRead(id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark notification as read" });
+    }
+  });
+
+  app.post("/api/notifications/read-all", async (_req: Request, res: Response) => {
+    try {
+      await storage.markAllNotificationsAsRead();
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to mark all notifications as read" });
+    }
   });
 }

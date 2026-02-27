@@ -41,7 +41,7 @@ fun DoctorInjuryDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         GolazoTopBar(
             title = "Injury Detail",
@@ -68,10 +68,10 @@ fun DoctorInjuryDetailScreen(
                     // Injury Info
                     item {
                         val sevColor = when (inj.severity) { "minor" -> SeverityMinor; "moderate" -> SeverityModerate; else -> SeveritySevere }
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                    Text(inj.bodyArea, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                    Text(inj.bodyArea, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                     Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
                                         Text(inj.severity.replaceFirstChar { it.uppercase() }, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = sevColor, modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp))
                                     }
@@ -93,9 +93,9 @@ fun DoctorInjuryDetailScreen(
 
                     // RTP Progress
                     item {
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Return to Play Progress", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            Text("Return to Play Progress", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                             Spacer(Modifier.height(12.dp))
                             val rtpStages = listOf("not_started", "in_rehab", "light_training", "full_training", "cleared")
                             val currentIndex = rtpStages.indexOf(inj.rtpStatus)
@@ -127,7 +127,7 @@ fun DoctorInjuryDetailScreen(
                                                 else -> stage
                                             },
                                             fontSize = 8.sp,
-                                            color = if (isActive) UefaBlue else TextSecondary
+                                            color = if (isActive) UefaBlue else MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                 }
@@ -143,22 +143,22 @@ fun DoctorInjuryDetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Notes Timeline", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Notes Timeline", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                             TextButton(onClick = { showAddNote = !showAddNote }) {
-                                Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Default.Add, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
                                 Spacer(Modifier.width(4.dp))
-                                Text("Add Note", fontSize = 12.sp)
+                                Text("Add Note", fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
 
                     if (showAddNote) {
                         item {
-                            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                            Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                                 Column(modifier = Modifier.padding(16.dp)) {
-                                Text("New Note", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text("New Note", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                                 Spacer(Modifier.height(8.dp))
-                                Text("Pain Intensity: $noteIntensity/10", fontSize = 12.sp)
+                                Text("Pain Intensity: $noteIntensity/10", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
                                 Slider(
                                     value = noteIntensity.toFloat(),
                                     onValueChange = { noteIntensity = it.toInt() },
@@ -175,7 +175,7 @@ fun DoctorInjuryDetailScreen(
                                     maxLines = 5
                                 )
                                 Spacer(Modifier.height(8.dp))
-                                Text("RTP Status Update", fontSize = 12.sp, color = TextSecondary)
+                                Text("RTP Status Update", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                     listOf("in_rehab", "light_training", "full_training", "cleared").forEach { status ->
                                         FilterChip(
@@ -224,19 +224,19 @@ fun DoctorInjuryDetailScreen(
                     }
 
                     items(notes) { note ->
-                        Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.padding(16.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text("Intensity: ${note.intensity}/10", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("Intensity: ${note.intensity}/10", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                                 note.rtpStatus?.let { RtpBadge(it) }
                             }
                             Spacer(Modifier.height(8.dp))
-                            Text(note.soapNotes, fontSize = 12.sp, color = TextSecondary)
+                            Text(note.soapNotes, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Spacer(Modifier.height(4.dp))
-                            Text(note.createdAt ?: "", fontSize = 10.sp, color = TextSecondary.copy(alpha = 0.7f))
+                            Text(note.createdAt ?: "", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f))
                         }
                         }
                     }
@@ -251,8 +251,8 @@ fun DoctorInjuryDetailScreen(
     if (showCloseDialog) {
         AlertDialog(
             onDismissRequest = { showCloseDialog = false },
-            title = { Text("Close Injury") },
-            text = { Text("Are you sure you want to close this injury case?") },
+            title = { Text("Close Injury", color = MaterialTheme.colorScheme.onSurface) },
+            text = { Text("Are you sure you want to close this injury case?", color = MaterialTheme.colorScheme.onSurface) },
             confirmButton = {
                 TextButton(onClick = {
                     injury?.let { inj ->
@@ -260,10 +260,10 @@ fun DoctorInjuryDetailScreen(
                             showCloseDialog = false
                         }
                     }
-                }) { Text("Close") }
+                }) { Text("Close", color = MaterialTheme.colorScheme.primary) }
             },
             dismissButton = {
-                TextButton(onClick = { showCloseDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showCloseDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.primary) }
             }
         )
     }
@@ -276,7 +276,7 @@ private fun DetailRow(label: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 2.dp)
     ) {
-        Text(label, fontSize = 11.sp, color = TextSecondary, modifier = Modifier.width(100.dp))
-        Text(value, fontSize = 11.sp, fontWeight = FontWeight.Medium)
+        Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.width(100.dp))
+        Text(value, fontSize = 11.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
     }
 }

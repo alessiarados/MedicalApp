@@ -15,6 +15,8 @@ import {
   type InsertInjuryNote,
   type InvitationToken,
   type InsertInvitationToken,
+  type Notification,
+  type InsertNotification,
   users,
   playerProfiles,
   consentGrants,
@@ -23,9 +25,10 @@ import {
   trainingSessions,
   injuryNotes,
   invitationTokens,
+  notifications,
 } from "../shared/schema.js";
 import { db } from "../db/index.js";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export class DbStorage {
   // Users
@@ -207,6 +210,29 @@ export class DbStorage {
 
   async deleteUser(id: string): Promise<void> {
     await db.delete(users).where(eq(users.id, id));
+  }
+
+  // Notifications
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const result = await db.insert(notifications).values(notification).returning();
+    return result[0];
+  }
+
+  async listNotifications(): Promise<Notification[]> {
+    return await db.select().from(notifications).orderBy(desc(notifications.createdAt)).limit(50);
+  }
+
+  async getUnreadNotificationCount(): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` }).from(notifications).where(eq(notifications.isRead, false));
+    return Number(result[0]?.count || 0);
+  }
+
+  async markNotificationAsRead(id: string): Promise<void> {
+    await db.update(notifications).set({ isRead: true }).where(eq(notifications.id, id));
+  }
+
+  async markAllNotificationsAsRead(): Promise<void> {
+    await db.update(notifications).set({ isRead: true }).where(eq(notifications.isRead, false));
   }
 }
 

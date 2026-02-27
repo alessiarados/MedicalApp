@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -76,7 +77,7 @@ fun TrainingScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 90.dp)
     ) {
@@ -174,7 +175,7 @@ fun TrainingScreen(
             item {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
-                    color = CardWhite,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -186,7 +187,7 @@ fun TrainingScreen(
                                 Icon(Icons.Default.Edit, null, tint = UefaBlue, modifier = Modifier.padding(6.dp))
                             }
                             Spacer(Modifier.width(10.dp))
-                            Text("New Training Session", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp)
+                            Text("New Training Session", fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.3).sp, color = MaterialTheme.colorScheme.onSurface)
                         }
                         Spacer(Modifier.height(16.dp))
 
@@ -200,7 +201,7 @@ fun TrainingScreen(
                         )
                         Spacer(Modifier.height(8.dp))
 
-                        Text("Type", fontSize = 12.sp, color = TextSecondary, fontWeight = FontWeight.SemiBold)
+                        Text("Type", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(4.dp))
                         FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -326,7 +327,7 @@ fun TrainingScreen(
 
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = CardWhite,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 4.dp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -346,8 +347,8 @@ fun TrainingScreen(
                         }
                         Spacer(Modifier.width(10.dp))
                         Column {
-                            Text("Weekly Summary", fontSize = 15.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.2).sp)
-                            Text("Training load overview", fontSize = 11.sp, color = TextSecondary)
+                            Text("Weekly Summary", fontSize = 15.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.2).sp, color = MaterialTheme.colorScheme.onSurface)
+                            Text("Training load overview", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
 
@@ -373,7 +374,7 @@ fun TrainingScreen(
                                 load >= 85 -> SeveritySevere
                                 load >= 60 -> SeverityModerate
                                 load > 0 -> SeverityMinor
-                                else -> BackgroundGray
+                                else -> MaterialTheme.colorScheme.outline
                             }
 
                             Column(
@@ -401,7 +402,7 @@ fun TrainingScreen(
                                         )
                                 )
                                 Spacer(Modifier.height(6.dp))
-                                Text(day, fontSize = 10.sp, color = TextSecondary, fontWeight = FontWeight.SemiBold)
+                                Text(day, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -423,10 +424,10 @@ fun TrainingScreen(
                     // Type breakdown
                     if (typeBreakdown.isNotEmpty()) {
                         Spacer(Modifier.height(16.dp))
-                        HorizontalDivider(color = BackgroundGray)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                         Spacer(Modifier.height(14.dp))
 
-                        Text("Type Breakdown", fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.2).sp)
+                        Text("Type Breakdown", fontSize = 13.sp, fontWeight = FontWeight.Bold, letterSpacing = (-0.2).sp, color = MaterialTheme.colorScheme.onSurface)
                         Spacer(Modifier.height(10.dp))
 
                         typeBreakdown.forEach { (typeName, mins) ->
@@ -455,12 +456,13 @@ fun TrainingScreen(
                                     typeName.replaceFirstChar { it.uppercase() },
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    modifier = Modifier.width(90.dp)
+                                    modifier = Modifier.width(90.dp),
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Box(modifier = Modifier.weight(1f).height(8.dp)) {
                                     Surface(
                                         shape = RoundedCornerShape(4.dp),
-                                        color = BackgroundGray,
+                                        color = MaterialTheme.colorScheme.outline,
                                         modifier = Modifier.fillMaxSize()
                                     ) {}
                                     val animPct by animateFloatAsState(
@@ -541,7 +543,7 @@ fun TrainingScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(20.dp),
-                    color = CardWhite,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -575,7 +577,8 @@ fun TrainingScreen(
                                     session.title,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    letterSpacing = (-0.2).sp
+                                    letterSpacing = (-0.2).sp,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(Modifier.height(2.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -595,7 +598,7 @@ fun TrainingScreen(
                                     Text(
                                         "${session.date} • ${session.timeOfDay.replaceFirstChar { it.uppercase() }}",
                                         fontSize = 11.sp,
-                                        color = TextSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -609,7 +612,7 @@ fun TrainingScreen(
                         }
 
                         Spacer(Modifier.height(12.dp))
-                        HorizontalDivider(color = BackgroundGray)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                         Spacer(Modifier.height(10.dp))
 
                         // Stats row
@@ -627,13 +630,13 @@ fun TrainingScreen(
                             Spacer(Modifier.height(8.dp))
                             Surface(
                                 shape = RoundedCornerShape(8.dp),
-                                color = BackgroundGray.copy(alpha = 0.5f),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(
                                     it,
                                     fontSize = 11.sp,
-                                    color = TextSecondary,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     maxLines = 2,
                                     modifier = Modifier.padding(10.dp)
                                 )
@@ -644,6 +647,197 @@ fun TrainingScreen(
                 Spacer(Modifier.height(10.dp))
             }
         }
+
+        // ── Planning Section ──
+        item {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Planning",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+
+        item {
+            DepthChartSection()
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+private fun DepthChartSection() {
+    var expanded by remember { mutableStateOf(false) }
+    
+    // Sample squad data by position
+    val squadByPosition = mapOf(
+        "GK" to listOf(
+            DepthPlayer("A. Becker", "available"),
+            DepthPlayer("B. Costa", "available")
+        ),
+        "DF" to listOf(
+            DepthPlayer("C. Silva", "available"),
+            DepthPlayer("D. Mendes", "available"),
+            DepthPlayer("E. Ramos", "injured"),
+            DepthPlayer("F. Laurent", "available"),
+            DepthPlayer("P. Santos", "available"),
+            DepthPlayer("S. Moreau", "available"),
+            DepthPlayer("V. Lee", "available"),
+            DepthPlayer("W. Martins", "available")
+        ),
+        "MF" to listOf(
+            DepthPlayer("G. Novak", "available"),
+            DepthPlayer("H. Pereira", "available"),
+            DepthPlayer("I. Kim", "available"),
+            DepthPlayer("J. Rossi", "injured"),
+            DepthPlayer("K. Johnson", "available"),
+            DepthPlayer("O. Ibrahim", "available"),
+            DepthPlayer("R. Tanaka", "available"),
+            DepthPlayer("U. Diallo", "available"),
+            DepthPlayer("X. Ahmed", "available")
+        ),
+        "FW" to listOf(
+            DepthPlayer("L. Petrov", "available"),
+            DepthPlayer("M. Garcia", "available"),
+            DepthPlayer("N. Okafor", "injured"),
+            DepthPlayer("O. Müller", "available"),
+            DepthPlayer("T. Clark", "available"),
+            DepthPlayer("Y. Schmidt", "available")
+        )
+    )
+
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 4.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Column {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = UefaBlue.copy(alpha = 0.12f),
+                    modifier = Modifier.size(44.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        Icon(Icons.Default.People, null, tint = UefaBlue, modifier = Modifier.size(22.dp))
+                    }
+                }
+                Spacer(Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Depth Chart",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        "Squad positions and backups",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Icon(
+                    if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            // Expanded content
+            if (expanded) {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                
+                Column(modifier = Modifier.padding(16.dp)) {
+                    squadByPosition.forEach { (position, players) ->
+                        PositionGroup(position = position, players = players)
+                        if (position != "FW") {
+                            Spacer(Modifier.height(16.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class DepthPlayer(val name: String, val status: String)
+
+@Composable
+private fun PositionGroup(position: String, players: List<DepthPlayer>) {
+    Column {
+        // Position badge
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        ) {
+            Text(
+                position,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+            )
+        }
+        
+        // Players grid (3 per row)
+        val chunkedPlayers = players.chunked(3)
+        chunkedPlayers.forEach { rowPlayers ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                rowPlayers.forEach { player ->
+                    DepthPlayerChip(player = player, modifier = Modifier.weight(1f))
+                }
+                // Fill empty space if less than 3 players in row
+                repeat(3 - rowPlayers.size) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DepthPlayerChip(player: DepthPlayer, modifier: Modifier = Modifier) {
+    val statusColor = when (player.status) {
+        "available" -> SeverityMinor
+        "injured" -> SeveritySevere
+        else -> SeverityModerate
+    }
+    
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .background(statusColor, CircleShape)
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            player.name,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1
+        )
     }
 }
 
@@ -662,9 +856,9 @@ private fun TrainingHeroStat(label: String, value: String, icon: ImageVector) {
 @Composable
 private fun SessionStatChip(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, tint = TextSecondary, modifier = Modifier.size(13.dp))
+        Icon(icon, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(13.dp))
         Spacer(Modifier.width(4.dp))
-        Text(text, fontSize = 11.sp, color = TextSecondary, fontWeight = FontWeight.SemiBold)
+        Text(text, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -673,6 +867,6 @@ private fun WeeklyLegendDot(color: Color, label: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Surface(shape = CircleShape, color = color, modifier = Modifier.size(8.dp)) {}
         Spacer(Modifier.width(4.dp))
-        Text(label, fontSize = 10.sp, color = TextSecondary)
+        Text(label, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

@@ -198,3 +198,18 @@ data class UserResponse(val user: User? = null)
 data class InactivePlayersResponse(
     val players: List<PlayerWithProfile> = emptyList()
 )
+
+@Serializable
+data class NotificationsResponse(
+    val notifications: List<AppNotification> = emptyList()
+)
+
+@Serializable
+data class UnreadCountResponse(
+    val count: Int = 0
+)
+
+@Serializable
+data class SuccessResponse(
+    val success: Boolean = false
+)

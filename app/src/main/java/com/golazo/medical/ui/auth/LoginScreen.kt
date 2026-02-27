@@ -125,7 +125,8 @@ fun LoginScreen(
                         onValueChange = viewModel::updateEmail,
                         label = "Email (@uefa.com)",
                         keyboardType = KeyboardType.Email,
-                        leadingIcon = { Icon(Icons.Default.Email, null, tint = TextSecondary) }
+                        leadingIcon = { Icon(Icons.Default.Email, null, tint = TextSecondary) },
+                        forceLightTheme = true
                     )
                     Spacer(Modifier.height(14.dp))
 
@@ -134,7 +135,8 @@ fun LoginScreen(
                         onValueChange = viewModel::updatePassword,
                         label = "Password",
                         isPassword = true,
-                        leadingIcon = { Icon(Icons.Default.Lock, null, tint = TextSecondary) }
+                        leadingIcon = { Icon(Icons.Default.Lock, null, tint = TextSecondary) },
+                        forceLightTheme = true
                     )
                     Spacer(Modifier.height(16.dp))
 

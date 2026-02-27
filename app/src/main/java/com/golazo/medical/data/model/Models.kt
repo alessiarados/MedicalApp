@@ -202,3 +202,16 @@ data class TrainingSession(
     @SerialName("play_ids") val playIds: List<String>? = null,
     @SerialName("created_at") val createdAt: String? = null
 )
+
+@Serializable
+data class AppNotification(
+    val id: String = "",
+    val type: String = "",
+    val title: String = "",
+    val message: String = "",
+    @SerialName("player_id") val playerId: String? = null,
+    @SerialName("player_name") val playerName: String? = null,
+    @SerialName("related_id") val relatedId: String? = null,
+    @SerialName("is_read") val isRead: Boolean = false,
+    @SerialName("created_at") val createdAt: String? = null
+)

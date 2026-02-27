@@ -3,6 +3,10 @@ package com.golazo.medical.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -45,7 +49,14 @@ val StressElevated = Color(0xFFEF4444)
 val AccentGold = Color(0xFFDB1B77)        // Remapped to UEFA pink for accent usage
 val CardWhite = Color(0xFFFCFCFD)
 
-private val GolazoColorScheme = lightColorScheme(
+// Dark theme colors
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1E1E1E)
+val DarkCardWhite = Color(0xFF2D2D2D)
+val DarkTextPrimary = Color(0xFFE1E1E1)
+val DarkTextSecondary = Color(0xFFA0A0A0)
+
+private val GolazoLightColorScheme = lightColorScheme(
     primary = UefaBlue,
     onPrimary = White,
     primaryContainer = UefaBlueVeryLight,
@@ -61,6 +72,25 @@ private val GolazoColorScheme = lightColorScheme(
     surfaceVariant = BackgroundGray,
     onSurfaceVariant = TextSecondary,
     outline = CardBorder,
+    error = SeveritySevere,
+)
+
+private val GolazoDarkColorScheme = darkColorScheme(
+    primary = UefaBlueLight,
+    onPrimary = White,
+    primaryContainer = UefaBlueDark,
+    onPrimaryContainer = UefaBlueVeryLight,
+    secondary = UefaCyan,
+    onSecondary = DarkBackground,
+    tertiary = UefaPink,
+    onTertiary = White,
+    background = DarkBackground,
+    onBackground = DarkTextPrimary,
+    surface = DarkSurface,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkCardWhite,
+    onSurfaceVariant = DarkTextSecondary,
+    outline = Color(0xFF3D3D3D),
     error = SeveritySevere,
 )
 
@@ -83,9 +113,14 @@ val GolazoTypography = Typography(
 )
 
 @Composable
-fun GolazoTheme(content: @Composable () -> Unit) {
+fun GolazoTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) GolazoDarkColorScheme else GolazoLightColorScheme
+    
     MaterialTheme(
-        colorScheme = GolazoColorScheme,
+        colorScheme = colorScheme,
         typography = GolazoTypography,
         content = content
     )

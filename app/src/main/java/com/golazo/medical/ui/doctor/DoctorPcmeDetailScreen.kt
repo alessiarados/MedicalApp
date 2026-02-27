@@ -33,7 +33,7 @@ fun DoctorPcmeDetailScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         GolazoTopBar(
             title = "PCME Detail",
@@ -82,8 +82,8 @@ fun DoctorPcmeDetailScreen(
                             DoctorPcmeSection("Vaccine Passport", Icons.Default.Vaccines) {
                                 pcme.vaccinePassport.forEach { v ->
                                     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
-                                        Text(v.vaccine, fontSize = 11.sp, modifier = Modifier.weight(1f))
-                                        Text(v.date, fontSize = 11.sp, color = TextSecondary)
+                                        Text(v.vaccine, fontSize = 11.sp, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
+                                        Text(v.date, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     }
                                 }
                             }
@@ -94,8 +94,8 @@ fun DoctorPcmeDetailScreen(
                         item {
                             DoctorPcmeSection("Medical Conditions", Icons.Default.LocalHospital) {
                                 pcme.medicalConditions.forEach { c ->
-                                    Text(c.condition, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-                                    Text(c.notes, fontSize = 11.sp, color = TextSecondary)
+                                    Text(c.condition, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+                                    Text(c.notes, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     Spacer(Modifier.height(4.dp))
                                 }
                             }
@@ -114,7 +114,7 @@ fun DoctorPcmeDetailScreen(
 
                     if (pcme.prescriptions.isNotEmpty()) {
                         item {
-                            Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+                            Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
@@ -124,16 +124,16 @@ fun DoctorPcmeDetailScreen(
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(Icons.Default.Receipt, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
                                         Spacer(Modifier.width(8.dp))
-                                        Text("Prescriptions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                                        Text("Prescriptions", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                                     }
                                     TextButton(onClick = { /* Import prescriptions */ }) {
-                                        Text("Import", fontSize = 11.sp, color = UefaBlue)
+                                        Text("Import", fontSize = 11.sp, color = MaterialTheme.colorScheme.primary)
                                     }
                                 }
                                 Spacer(Modifier.height(12.dp))
                                 pcme.prescriptions.forEach { p ->
-                                    Text(p.name, fontSize = 12.sp, fontWeight = FontWeight.Medium)
-                                    Text("${p.dosage} - ${p.frequency} (by ${p.prescribedBy})", fontSize = 11.sp, color = TextSecondary)
+                                    Text(p.name, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
+                                    Text("${p.dosage} - ${p.frequency} (by ${p.prescribedBy})", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                     Spacer(Modifier.height(4.dp))
                                 }
                             }
@@ -144,7 +144,7 @@ fun DoctorPcmeDetailScreen(
                     pcme.allergies?.let {
                         item {
                             DoctorPcmeSection("Allergies", Icons.Default.Warning) {
-                                Text(it, fontSize = 12.sp)
+                                Text(it, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
                             }
                         }
                     }
@@ -163,7 +163,7 @@ fun DoctorPcmeDetailScreen(
                             DoctorPcmeSection("Signature", Icons.Default.Draw) {
                                 PcmeRow("Terms Accepted", pcme.termsAcceptedAt ?: "Yes")
                                 pcme.signatureData?.let {
-                                    Text("Signature: ${it.take(20)}...", fontSize = 10.sp, color = TextSecondary)
+                                    Text("Signature: ${it.take(20)}...", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                             }
                         }
@@ -178,12 +178,12 @@ fun DoctorPcmeDetailScreen(
 
 @Composable
 private fun DoctorPcmeSection(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
-    Surface(shape = RoundedCornerShape(20.dp), color = CardWhite, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
+    Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface, shadowElevation = 4.dp, modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(icon, null, tint = UefaBlue, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
             }
             Spacer(Modifier.height(12.dp))
             content()
@@ -198,7 +198,7 @@ private fun PcmeRow(label: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 3.dp)
     ) {
-        Text(label, fontSize = 11.sp, color = TextSecondary, modifier = Modifier.weight(1f))
-        Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f))
+        Text(value, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface)
     }
 }

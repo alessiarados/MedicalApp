@@ -2,6 +2,7 @@ package com.golazo.medical.ui.doctor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.golazo.medical.data.PreferencesManager
 import com.golazo.medical.data.model.*
 import com.golazo.medical.data.repository.GolazoRepository
 import com.golazo.medical.data.repository.SessionManager
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DoctorViewModel @Inject constructor(
     private val repository: GolazoRepository,
-    val sessionManager: SessionManager
+    val sessionManager: SessionManager,
+    val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     private val _players = MutableStateFlow<List<PlayerWithProfile>>(emptyList())
@@ -41,6 +43,12 @@ class DoctorViewModel @Inject constructor(
 
     private val _trainingSessions = MutableStateFlow<List<TrainingSession>>(emptyList())
     val trainingSessions: StateFlow<List<TrainingSession>> = _trainingSessions.asStateFlow()
+
+    private val _notifications = MutableStateFlow<List<AppNotification>>(emptyList())
+    val notifications: StateFlow<List<AppNotification>> = _notifications.asStateFlow()
+
+    private val _unreadCount = MutableStateFlow(0)
+    val unreadCount: StateFlow<Int> = _unreadCount.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -199,6 +207,34 @@ class DoctorViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteTrainingSession(id).onSuccess {
                 loadTrainingSessions()
+            }
+        }
+    }
+
+    fun loadNotifications() {
+        viewModelScope.launch {
+            repository.getNotifications().onSuccess {
+                _notifications.value = it.notifications
+            }
+            repository.getUnreadNotificationCount().onSuccess {
+                _unreadCount.value = it.count
+            }
+        }
+    }
+
+    fun markNotificationAsRead(id: String) {
+        viewModelScope.launch {
+            repository.markNotificationAsRead(id).onSuccess {
+                loadNotifications()
+            }
+        }
+    }
+
+    fun markAllNotificationsAsRead() {
+        viewModelScope.launch {
+            repository.markAllNotificationsAsRead().onSuccess {
+                _unreadCount.value = 0
+                _notifications.value = _notifications.value.map { it.copy(isRead = true) }
             }
         }
     }

@@ -62,4 +62,10 @@ class GolazoRepository @Inject constructor(
 
     // Intelligence
     suspend fun chat(request: ChatRequest) = runCatching { api.chat(request) }
+
+    // Notifications
+    suspend fun getNotifications() = runCatching { api.getNotifications() }
+    suspend fun getUnreadNotificationCount() = runCatching { api.getUnreadNotificationCount() }
+    suspend fun markNotificationAsRead(id: String) = runCatching { api.markNotificationAsRead(id) }
+    suspend fun markAllNotificationsAsRead() = runCatching { api.markAllNotificationsAsRead() }
 }

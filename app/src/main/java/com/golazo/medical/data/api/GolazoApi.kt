@@ -128,4 +128,17 @@ interface GolazoApi {
     @Multipart
     @POST("api/transcribe")
     suspend fun transcribe(@Part file: MultipartBody.Part): TranscriptResponse
+
+    // Notifications
+    @GET("api/notifications")
+    suspend fun getNotifications(): NotificationsResponse
+
+    @GET("api/notifications/unread-count")
+    suspend fun getUnreadNotificationCount(): UnreadCountResponse
+
+    @POST("api/notifications/{id}/read")
+    suspend fun markNotificationAsRead(@Path("id") id: String): SuccessResponse
+
+    @POST("api/notifications/read-all")
+    suspend fun markAllNotificationsAsRead(): SuccessResponse
 }

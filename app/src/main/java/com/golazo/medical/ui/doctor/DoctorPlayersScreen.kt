@@ -61,7 +61,7 @@ fun DoctorPlayersScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 90.dp)
     ) {
@@ -140,7 +140,7 @@ fun DoctorPlayersScreen(
         item {
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = CardWhite,
+                color = MaterialTheme.colorScheme.surface,
                 shadowElevation = 2.dp,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,7 +151,7 @@ fun DoctorPlayersScreen(
                     onValueChange = { searchQuery = it },
                     label = "Search players...",
                     modifier = Modifier.padding(4.dp),
-                    leadingIcon = { Icon(Icons.Default.Search, null, tint = TextSecondary) }
+                    leadingIcon = { Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.onSurfaceVariant) }
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -222,7 +222,7 @@ fun DoctorPlayersScreen(
             items(filtered) { pw ->
                 val profile = pw.profile ?: return@items
                 val isInjured = pw.user?.id in injuredPlayerIds
-                val playerInjury = if (isInjured) openInjuries.find { it.userId == pw.user?.id } else null
+                val playerInjuries = openInjuries.filter { it.userId == pw.user?.id }
 
                 Surface(
                     modifier = Modifier
@@ -230,7 +230,7 @@ fun DoctorPlayersScreen(
                         .padding(horizontal = 16.dp)
                         .clickable { pw.user?.id?.let { onPlayerClick(it) } },
                     shape = RoundedCornerShape(20.dp),
-                    color = CardWhite,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -268,7 +268,8 @@ fun DoctorPlayersScreen(
                                     "${profile.firstName} ${profile.lastName}",
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    letterSpacing = (-0.2).sp
+                                    letterSpacing = (-0.2).sp,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(Modifier.height(2.dp))
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -288,7 +289,7 @@ fun DoctorPlayersScreen(
                                     Text(
                                         "${profile.club} • ${profile.nationality}",
                                         fontSize = 11.sp,
-                                        color = TextSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
@@ -296,14 +297,14 @@ fun DoctorPlayersScreen(
                             Icon(
                                 Icons.Default.ChevronRight,
                                 null,
-                                tint = TextSecondary.copy(alpha = 0.5f),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(20.dp)
                             )
                         }
 
                         // Status row
                         Spacer(Modifier.height(12.dp))
-                        HorizontalDivider(color = BackgroundGray)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                         Spacer(Modifier.height(10.dp))
 
                         Row(
@@ -316,28 +317,46 @@ fun DoctorPlayersScreen(
                                 PcmeStatusBadge(profile.pcmeStatus)
                             }
 
-                            if (isInjured && playerInjury != null) {
-                                Surface(
-                                    shape = RoundedCornerShape(8.dp),
-                                    color = SeveritySevere.copy(alpha = 0.08f)
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(
-                                            Icons.Default.LocalHospital,
-                                            null,
-                                            tint = SeveritySevere,
-                                            modifier = Modifier.size(12.dp)
-                                        )
-                                        Spacer(Modifier.width(4.dp))
-                                        Text(
-                                            playerInjury.bodyArea,
-                                            fontSize = 10.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            color = SeveritySevere
-                                        )
+                            if (playerInjuries.isNotEmpty()) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    playerInjuries.take(3).forEach { injury ->
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = SeveritySevere.copy(alpha = 0.08f)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    Icons.Default.LocalHospital,
+                                                    null,
+                                                    tint = SeveritySevere,
+                                                    modifier = Modifier.size(10.dp)
+                                                )
+                                                Spacer(Modifier.width(3.dp))
+                                                Text(
+                                                    injury.bodyArea.split(",").first().trim(),
+                                                    fontSize = 9.sp,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    color = SeveritySevere
+                                                )
+                                            }
+                                        }
+                                    }
+                                    if (playerInjuries.size > 3) {
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = SeveritySevere.copy(alpha = 0.08f)
+                                        ) {
+                                            Text(
+                                                "+${playerInjuries.size - 3}",
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = SeveritySevere,
+                                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }

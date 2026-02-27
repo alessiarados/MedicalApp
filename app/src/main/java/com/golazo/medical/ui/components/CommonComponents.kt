@@ -96,8 +96,37 @@ fun GolazoTextField(
     maxLines: Int = 1,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    forceLightTheme: Boolean = false
 ) {
+    val colors = if (forceLightTheme) {
+        OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = UefaBlue,
+            unfocusedBorderColor = CardBorder,
+            focusedLabelColor = UefaBlue,
+            unfocusedLabelColor = TextSecondary,
+            unfocusedContainerColor = CardWhite,
+            focusedContainerColor = White,
+            cursorColor = UefaBlue,
+            focusedTextColor = TextPrimary,
+            unfocusedTextColor = TextPrimary,
+        )
+    } else {
+        OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = UefaBlue,
+            unfocusedBorderColor = CardBorder,
+            focusedLabelColor = UefaBlue,
+            unfocusedLabelColor = TextPrimary,
+            unfocusedContainerColor = CardWhite,
+            focusedContainerColor = White,
+            cursorColor = UefaBlue,
+            focusedTextColor = TextPrimary,
+            unfocusedTextColor = TextPrimary,
+            focusedPlaceholderColor = TextSecondary,
+            unfocusedPlaceholderColor = TextSecondary,
+        )
+    }
+    
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -108,13 +137,7 @@ fun GolazoTextField(
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         shape = RoundedCornerShape(14.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = UefaBlue,
-            unfocusedBorderColor = CardBorder,
-            focusedLabelColor = UefaBlue,
-            unfocusedContainerColor = CardWhite,
-            focusedContainerColor = White,
-        ),
+        colors = colors,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         enabled = enabled,

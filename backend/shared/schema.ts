@@ -206,3 +206,22 @@ export const insertInjuryNoteSchema = createInsertSchema(injuryNotes).omit({
 });
 export type InsertInjuryNote = z.infer<typeof insertInjuryNoteSchema>;
 export type InjuryNote = typeof injuryNotes.$inferSelect;
+
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: text("type", { enum: ["injury_created", "pcme_created", "injury_updated", "player_activated"] }).notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  playerId: varchar("player_id").references(() => users.id),
+  playerName: text("player_name"),
+  relatedId: varchar("related_id"),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;

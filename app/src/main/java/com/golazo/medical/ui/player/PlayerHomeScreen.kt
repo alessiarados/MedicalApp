@@ -64,7 +64,7 @@ fun PlayerHomeScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
         contentPadding = PaddingValues(bottom = 90.dp)
     ) {
@@ -175,7 +175,7 @@ fun PlayerHomeScreen(
                 Surface(
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(20.dp),
-                    color = CardWhite,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
                     Column(
@@ -188,7 +188,7 @@ fun PlayerHomeScreen(
                         ) {
                             Icon(Icons.Default.Refresh, null, tint = UefaBlue, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
-                            Text("Recovery", fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.2.sp)
+                            Text("Recovery", fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.2.sp, color = MaterialTheme.colorScheme.onSurface)
                         }
                         Spacer(Modifier.height(12.dp))
                         // Circular progress
@@ -238,7 +238,7 @@ fun PlayerHomeScreen(
                         .weight(1f)
                         .clickable { onNavigateToInjuries() },
                     shape = RoundedCornerShape(20.dp),
-                    color = CardWhite,
+                    color = MaterialTheme.colorScheme.surface,
                     shadowElevation = 4.dp
                 ) {
                     val activeInjuries = injuries.count { it.status == "active" }
@@ -256,15 +256,15 @@ fun PlayerHomeScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.LocalHospital, null, tint = SeveritySevere, modifier = Modifier.size(16.dp))
                                 Spacer(Modifier.width(6.dp))
-                                Text("Injuries", fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.2.sp)
+                                Text("Injuries", fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.2.sp, color = MaterialTheme.colorScheme.onSurface)
                             }
-                            Icon(Icons.Default.ChevronRight, null, tint = TextSecondary, modifier = Modifier.size(18.dp))
+                            Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
                         }
                         Spacer(Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.Bottom) {
-                            Text("$activeInjuries", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
+                            Text("$activeInjuries", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                             Spacer(Modifier.width(6.dp))
-                            Text("active", fontSize = 13.sp, color = TextSecondary, modifier = Modifier.padding(bottom = 6.dp))
+                            Text("active", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(bottom = 6.dp))
                         }
                         Spacer(Modifier.height(16.dp))
                         Row(

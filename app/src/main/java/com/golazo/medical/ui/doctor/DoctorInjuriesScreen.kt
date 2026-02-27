@@ -25,6 +25,7 @@ import com.golazo.medical.ui.theme.*
 fun DoctorInjuriesScreen(
     onInjuryClick: (String) -> Unit,
     onCreateInjury: () -> Unit,
+    onBack: () -> Unit,
     viewModel: DoctorViewModel = hiltViewModel()
 ) {
     val injuries by viewModel.injuries.collectAsStateWithLifecycle()
@@ -40,17 +41,7 @@ fun DoctorInjuriesScreen(
     }
 
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onCreateInjury,
-                containerColor = UefaBlue,
-                contentColor = White,
-                shape = CircleShape
-            ) {
-                Icon(Icons.Default.Add, "New Injury")
-            }
-        },
-        containerColor = BackgroundGray
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -59,11 +50,17 @@ fun DoctorInjuriesScreen(
                 .statusBarsPadding(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 90.dp)
         ) {
-            // Header
+            // Header with back button
             item {
-                Column {
-                    Text("All Injuries", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Text("${injuries.size} total injuries", fontSize = 12.sp, color = TextSecondary)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, "Back", tint = MaterialTheme.colorScheme.onBackground)
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Column {
+                        Text("All Injuries", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                        Text("${injuries.size} total injuries", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
                 Spacer(Modifier.height(12.dp))
             }
@@ -77,20 +74,35 @@ fun DoctorInjuriesScreen(
                     FilterChip(
                         selected = filterStatus == null && filterSeverity == null,
                         onClick = { filterStatus = null; filterSeverity = null },
-                        label = { Text("All", fontSize = 10.sp) },
-                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = UefaBlue, selectedLabelColor = White)
+                        label = { Text("All", fontSize = 10.sp, color = if (filterStatus == null && filterSeverity == null) White else MaterialTheme.colorScheme.onSurface) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = UefaBlue,
+                            selectedLabelColor = White,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     FilterChip(
                         selected = filterStatus == "open",
                         onClick = { filterStatus = if (filterStatus == "open") null else "open" },
-                        label = { Text("Open", fontSize = 10.sp) },
-                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = StatusOpen, selectedLabelColor = White)
+                        label = { Text("Open", fontSize = 10.sp, color = if (filterStatus == "open") White else MaterialTheme.colorScheme.onSurface) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = StatusOpen,
+                            selectedLabelColor = White,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     FilterChip(
                         selected = filterStatus == "closed",
                         onClick = { filterStatus = if (filterStatus == "closed") null else "closed" },
-                        label = { Text("Closed", fontSize = 10.sp) },
-                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = StatusClosed, selectedLabelColor = White)
+                        label = { Text("Closed", fontSize = 10.sp, color = if (filterStatus == "closed") White else MaterialTheme.colorScheme.onSurface) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = StatusClosed,
+                            selectedLabelColor = White,
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     listOf("minor", "moderate", "severe").forEach { sev ->
                         val color = when (sev) {
@@ -101,8 +113,13 @@ fun DoctorInjuriesScreen(
                         FilterChip(
                             selected = filterSeverity == sev,
                             onClick = { filterSeverity = if (filterSeverity == sev) null else sev },
-                            label = { Text(sev.replaceFirstChar { it.uppercase() }, fontSize = 10.sp) },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = color, selectedLabelColor = White)
+                            label = { Text(sev.replaceFirstChar { it.uppercase() }, fontSize = 10.sp, color = if (filterSeverity == sev) White else MaterialTheme.colorScheme.onSurface) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = color,
+                                selectedLabelColor = White,
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                labelColor = MaterialTheme.colorScheme.onSurface
+                            )
                         )
                     }
                 }
@@ -125,7 +142,7 @@ fun DoctorInjuriesScreen(
                             .fillMaxWidth()
                             .clickable { onInjuryClick(injury.id) },
                         shape = RoundedCornerShape(20.dp),
-                        color = CardWhite,
+                        color = MaterialTheme.colorScheme.surface,
                         shadowElevation = 4.dp
                     ) {
                         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
@@ -134,8 +151,8 @@ fun DoctorInjuriesScreen(
                             }
                             Spacer(Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(injury.bodyArea, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text(injury.mechanism, fontSize = 11.sp, color = TextSecondary, maxLines = 1)
+                                Text(injury.bodyArea, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                                Text(injury.mechanism, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
                                 Spacer(Modifier.height(6.dp))
                                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                     Surface(shape = RoundedCornerShape(8.dp), color = sevColor.copy(alpha = 0.12f)) {
@@ -145,9 +162,9 @@ fun DoctorInjuriesScreen(
                                         Text(injury.status.replaceFirstChar { it.uppercase() }, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = if (injury.status == "open") StatusOpen else StatusClosed, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
                                     }
                                 }
-                                Text("Created by: ${injury.createdBy}", fontSize = 10.sp, color = TextSecondary)
+                                Text("Created by: ${injury.createdBy}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
-                            Icon(Icons.Default.ChevronRight, null, tint = TextSecondary)
+                            Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     Spacer(Modifier.height(8.dp))
